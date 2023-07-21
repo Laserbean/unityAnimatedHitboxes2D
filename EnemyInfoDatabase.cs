@@ -4,10 +4,10 @@ using UnityEngine;
 
 
 
-[CreateAssetMenu(fileName = "EnemyInfoDatabase",menuName = "Attack/EnemyInfoDatabase")]
-public class EnemyInfoDB : ScriptableObject
+[CreateAssetMenu(fileName = "EnemyInfoDatabase",menuName = "Enemies/EnemyInfoDatabase")]
+public class EnemyInfoDatabaseOld : ScriptableObject
 {
-    public List<EnemyInfoObject> list; 
+    public List<EnemyInfoObjectOld> list; 
 
 
     private void OnValidate() {
