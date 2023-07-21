@@ -25,7 +25,7 @@ public class HitboxInfo2 {
     public List<Sprite> sprites;
 
     [Header("Damage")]
-    public DamageInfoOld damageinfo; 
+    public DamageInfo damageinfo; 
 
 }
 
