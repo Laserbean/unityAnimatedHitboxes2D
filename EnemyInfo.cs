@@ -13,7 +13,7 @@ public class EnemyInfo {
     public float linear_drag;
     public float angular_drag; 
 
-    public List<AttackInfoObjectOld> attack_object_list;
+    public List<AttackInfoObject> attack_object_list;
 
 }
 
