@@ -6,8 +6,6 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "AttackInfo", menuName = "Attack/Attack Info")]
 public class AttackInfoObject : ScriptableObject
 {
-
-
     [EasyButtons.Button]
     protected virtual void BUTTON(){
 

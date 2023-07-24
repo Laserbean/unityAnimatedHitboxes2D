@@ -5,7 +5,7 @@ using UnityEngine;
 public class HitboxController : MonoBehaviour
 {
 
-    HitboxInfo2 hitbox_info; 
+    HitboxInfo hitbox_info; 
     SpriteRenderer spriteRenderer; 
 
     Transform parent = null; 
@@ -26,7 +26,7 @@ public class HitboxController : MonoBehaviour
     }
 
 
-    public void SetupHitbox(HitboxInfo2 _hitbox, Transform _parent) {
+    public void SetupHitbox(HitboxInfo _hitbox, Transform _parent) {
 
         hitbox_info = _hitbox; 
 
@@ -40,7 +40,7 @@ public class HitboxController : MonoBehaviour
         }
     }
 
-    void SetupCollider(HitboxInfo2 hitbox) {
+    void SetupCollider(HitboxInfo hitbox) {
         boxCollider2D.enabled = false; 
         circleCollider2D.enabled = false; 
         polygonCollider2D.enabled = false; 
@@ -125,12 +125,15 @@ public class HitboxController : MonoBehaviour
         this.transform.parent = null; 
 
         this.gameObject.transform.position = position + hitbox_info.local_position.ToVector3().Rotate(angle); 
+
+        angle = hitbox_info.zeroRotation ? 0 : angle; 
         this.transform.rotation = Quaternion.Euler(0,0,angle); 
 
     }
 
     
     void ResetPosition(float angle, Vector3 position) {
+        angle = hitbox_info.zeroRotation ? 0 : angle; 
         if (hitbox_info.isBody) {
             this.gameObject.transform.position = position + hitbox_info.local_position.ToVector3().Rotate(angle); 
             this.transform.parent = parent; 
@@ -145,6 +148,7 @@ public class HitboxController : MonoBehaviour
 
 
     void ResetPosition(float angle) {
+        angle = hitbox_info.zeroRotation ? 0 : angle; 
         if (hitbox_info.isBody) {
             this.transform.parent = parent; 
             this.gameObject.transform.localPosition = hitbox_info.local_position.ToVector3().Rotate(angle); 
@@ -293,7 +297,7 @@ public class HitboxController : MonoBehaviour
     }
 
 
-    public static GameObject CreateHitbox(Transform parenttrans, HitboxInfo2 hitbox, string nam = "hitbox") {
+    public static GameObject CreateHitbox(Transform parenttrans, HitboxInfo hitbox, string nam = "hitbox") {
         GameObject hitboxobject = new GameObject(nam); 
 
         // hitboxobject.transform.SetParent(parenttrans); 

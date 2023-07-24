@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class HitboxInfo2 {
+public class HitboxInfo {
     [Header ("Shape")]
     public Vector2 size; 
     public Vector2 offset; 
@@ -11,6 +11,8 @@ public class HitboxInfo2 {
     public HitboxShape shape; 
 
     public RigidbodyInfo rigidbodyInfo; 
+
+    public bool zeroRotation = false; 
 
     [Header("Timing")]
     public float duration; 

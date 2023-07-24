@@ -10,13 +10,13 @@ public class AttackInfo2 {
     public bool isBody = false; 
 
     [Header ("Prep")] 
-    public HitboxInfo2 prep_hitbox; 
+    public HitboxInfo prep_hitbox; 
     
     [Header ("Main Attack")] 
-    public List<HitboxInfo2> hitboxes; 
+    public List<HitboxInfo> hitboxes; 
 
     [Header("Cooldown/reload")]
-    public HitboxInfo2 after_hitbox; 
+    public HitboxInfo after_hitbox; 
 
 
     [Header("Aim and range and other stuff")]
@@ -27,11 +27,7 @@ public class AttackInfo2 {
     
     public float reload_time = 0f;
 
-
-
-
     private float _attack_duration = -1; 
-
 
     public float attack_duration {
         get {
@@ -47,4 +43,35 @@ public class AttackInfo2 {
 
     }
 
+}
+
+
+[System.Serializable]
+public class AttackInfo {
+    public bool isBody = false; 
+
+    [Header ("Prep")] 
+    public HitboxInfo prep_hitbox; 
+    
+    [Header ("Main Attack")] 
+    public HitboxInfo main_hitbox; 
+
+    [Header("Cooldown/reload")]
+    public HitboxInfo after_hitbox; 
+
+
+    [Header("Aim and range and other stuff")]
+    public float max_angle_error;
+
+    [Tooltip("[Min, Max, Centre]")]
+    public Vector3 range; //min, max, center;
+    
+    public float reload_time = 0f;
+
+
+    public float attack_duration {
+        get {
+            return main_hitbox.duration; 
+        }
+    }
 }
