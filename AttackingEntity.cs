@@ -19,7 +19,7 @@ public abstract class AttackingEntity : MonoBehaviour
     }
     #endif
 
-    AttackController attackController; 
+    NewAttackController attackController; 
 
 
     protected void UpdateHitboxes() {
@@ -27,20 +27,17 @@ public abstract class AttackingEntity : MonoBehaviour
     }
 
     protected void Start() {
-        attackController = this.gameObject.AddComponent<AttackController>(); 
+        attackController = this.gameObject.AddComponent<NewAttackController>(); 
         attackController.DisenableMovement = DisenableMovement; 
         attackController.SetAttackInfo(attackInfoObject);
 
         // if (attackInfoObject == null) return; 
     }
 
-    [SerializeField] List<string> tag_blacklist = new List<string>(); 
 
 
     protected void AddBlacklist(string tagg) {
-        if (tag_blacklist.Contains(tagg)) return; 
-
-        tag_blacklist.Add(tagg); 
+        attackController.AddBlacklist(tagg); 
     }
 
 

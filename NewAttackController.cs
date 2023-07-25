@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Obsolete("Use NewAttackController")]
-public class AttackController : MonoBehaviour
+public class NewAttackController : MonoBehaviour
 {
     [SerializeField] AttackInfoObject attackInfoObject;
 
@@ -16,6 +15,7 @@ public class AttackController : MonoBehaviour
         UpdateHitboxes(); 
     }
 
+
     protected void Start() {
         if (attackInfoObject == null) return; 
         CreateHitboxes(); 
@@ -23,27 +23,42 @@ public class AttackController : MonoBehaviour
     [SerializeField] List<string> tag_blacklist = new List<string>(); 
 
     GameObject prepHGO; 
-    HitboxController prepHitboxController;
+    HitboxesController prepHitboxesController;
     List<GameObject> attackHGOs = new List<GameObject>();
-    List<HitboxController> attackHitboxControllers = new List<HitboxController>();
+    List<HitboxesController> attackHitboxesControllers = new List<HitboxesController>();
     GameObject cooldownHGO;
-    HitboxController cooldownHitboxController;
+    HitboxesController cooldownHitboxesController;
 
     void CreateHitboxes() {
-        prepHGO = HitboxController.CreateHitbox(this.transform, attackInfoObject.attack.prep_hitbox, "prep"); 
-        prepHitboxController = prepHGO.GetComponent<HitboxController>(); 
+        prepHGO = new GameObject("prep_hitbox"); 
+        prepHGO.transform.SetParent(this.transform); 
+        prepHGO.transform.localPosition = Vector3.zero; 
+
+        prepHitboxesController = prepHGO.AddComponent<HitboxesController>(); 
+        prepHitboxesController.SetHitbox(attackInfoObject.attack.prep_hitbox); 
 
         attackHGOs.Clear(); 
-        attackHitboxControllers.Clear(); 
+        attackHitboxesControllers.Clear(); 
+        int i = 0; 
         foreach(HitboxInfo hitbox in attackInfoObject.attack.hitboxes) {
-            GameObject go = HitboxController.CreateHitbox(this.transform, hitbox, "mainattack");
-            HitboxController hitboxcont = go.GetComponent<HitboxController>(); 
+            GameObject go = new GameObject("main_hitbox " + i); 
+            go.transform.SetParent(this.transform); 
+            go.transform.localPosition = Vector3.zero; 
+
+            i+=1; 
+            HitboxesController hitboxcont = go.AddComponent<HitboxesController>(); 
+            hitboxcont.SetHitbox(hitbox); 
+
             attackHGOs.Add(go); 
-            attackHitboxControllers.Add(hitboxcont); 
+            attackHitboxesControllers.Add(hitboxcont); 
         }
 
-        cooldownHGO = HitboxController.CreateHitbox(this.transform, attackInfoObject.attack.after_hitbox, "cooldown"); 
-        cooldownHitboxController = cooldownHGO.GetComponent<HitboxController>(); 
+        cooldownHGO = new GameObject("cooldown"); 
+        cooldownHGO.transform.SetParent(this.transform); 
+        cooldownHGO.transform.localPosition = Vector3.zero; 
+
+        cooldownHitboxesController = cooldownHGO.AddComponent<HitboxesController>(); 
+        cooldownHitboxesController.SetHitbox(attackInfoObject.attack.after_hitbox); 
 
         canAttack = true;
 
@@ -51,15 +66,15 @@ public class AttackController : MonoBehaviour
     }
 
     void DestroyHitboxes() {
-        Destroy(prepHGO); prepHitboxController = null; 
-        Destroy(cooldownHGO); cooldownHitboxController = null;
+        Destroy(prepHGO); prepHitboxesController = null; 
+        Destroy(cooldownHGO); cooldownHitboxesController = null;
 
         GameObject[] toDelete = attackHGOs.ToArray(); 
 
         for (int i = toDelete.Length -1; i >= 0; i--) {
             Destroy(toDelete[i]); 
         }
-        attackHitboxControllers.Clear(); 
+        attackHitboxesControllers.Clear(); 
     }
 
     void UpdateHitboxes() {
@@ -82,11 +97,11 @@ public class AttackController : MonoBehaviour
     }
 
     void AddToBlacklist(string tagg) {
-        prepHitboxController?.AddBlacklist(tagg); 
-        foreach(var thing in attackHitboxControllers) {
+        prepHitboxesController?.AddBlacklist(tagg); 
+        foreach(var thing in attackHitboxesControllers) {
             thing.AddBlacklist(tagg);
         }
-        cooldownHitboxController?.AddBlacklist(tagg); 
+        cooldownHitboxesController?.AddBlacklist(tagg); 
     }
 
     protected bool InRange(Vector3 enemyPos) {
@@ -113,15 +128,22 @@ public class AttackController : MonoBehaviour
 
         Vector3 curpos = this.transform.position; 
 
-        yield return prepHitboxController.Attack(angle, curpos); 
+        // yield return prepHitboxesController.Attack(angle, curpos);
+        //TODO maybe add the pos here
+        prepHitboxesController.Attack(angle);
+        yield return new WaitForSeconds(prepHitboxesController.hitbox.duration);
+
 
         
-        foreach(var thing in attackHitboxControllers) {
-            yield return thing.Attack(angle,curpos); 
+        foreach(var thing in attackHitboxesControllers) {
+            thing.Attack(angle); 
+            yield return new WaitForSeconds(thing.hitbox.duration);
         }
 
         if (DisenableMovement != null) DisenableMovement(true);
-        yield return cooldownHitboxController.Attack(angle, curpos); 
+        cooldownHitboxesController.Attack(angle); 
+        yield return new WaitForSeconds(cooldownHitboxesController.hitbox.duration);
+
 
         canAttack = true; 
         yield break; 
