@@ -81,11 +81,11 @@ public class AttackController : MonoBehaviour
     }
 
     void AddToBlacklist(string tagg) {
-        prepHitboxController.AddBlacklist(tagg); 
+        prepHitboxController?.AddBlacklist(tagg); 
         foreach(var thing in attackHitboxControllers) {
             thing.AddBlacklist(tagg);
         }
-        cooldownHitboxController.AddBlacklist(tagg); 
+        cooldownHitboxController?.AddBlacklist(tagg); 
     }
 
     protected bool InRange(Vector3 enemyPos) {
@@ -119,7 +119,7 @@ public class AttackController : MonoBehaviour
             yield return thing.Attack(angle,curpos); 
         }
 
-        DisenableMovement(true);
+        if (DisenableMovement != null) DisenableMovement(true);
         yield return cooldownHitboxController.Attack(angle, curpos); 
 
         canAttack = true; 
