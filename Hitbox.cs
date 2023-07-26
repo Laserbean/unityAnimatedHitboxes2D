@@ -70,7 +70,14 @@ public class Hitbox : MonoBehaviour
         // rgbd2d.mass = hitbox.rigidbodyInfo.mass; 
         // rgbd2d.drag = hitbox.rigidbodyInfo.linear_drag; 
         // rgbd2d.freezeRotation = hitbox.rigidbodyInfo.freeze_rotation; 
+        
+        // this.gameObject.SetActive(false); 
+
+        turnOffCollider(); 
+
         this.gameObject.SetActive(false); 
+
+
 
     }
 
@@ -214,6 +221,23 @@ public class Hitbox : MonoBehaviour
 
         spriteRenderer.enabled = false; 
 
+        TrailRenderer trailRenderer = this.gameObject.GetComponent<TrailRenderer>();
+        if (trailRenderer != null)
+        {
+            trailRenderer.enabled = false;
+        }
+
+        this.transform.parent = parent; 
+        this.transform.localPosition = Vector3.zero; 
+
+        // this.gameObject.SetActive(false); 
+
+        Invoke("setInactive", 0.1f); 
+
+
+    }
+
+    void setInactive() {
         this.gameObject.SetActive(false); 
     }
 
@@ -221,6 +245,12 @@ public class Hitbox : MonoBehaviour
 
 
     void resetCollider() {
+        TrailRenderer trailRenderer = this.gameObject.GetComponent<TrailRenderer>();
+        if (trailRenderer != null)
+        {
+            trailRenderer.enabled = true;
+        }
+
         spriteRenderer.enabled = true; 
 
         switch(hitbox_info.shape) {
@@ -256,11 +286,12 @@ public class Hitbox : MonoBehaviour
         yield return StartCoroutine(allAttack()); 
         
         
-        this.gameObject.SetActive(false); 
+        turnOffCollider(); 
 
         // this.transform.localPosition = Vector3.zero; 
         if (parent == null) Destroy(this.gameObject); 
         this.transform.parent = parent; 
+        this.transform.localPosition = Vector3.zero; 
     }
 
     IEnumerator allAttack() {

@@ -12,7 +12,7 @@ public class HitboxesController : MonoBehaviour
     }
 
     [Min(1)]
-    [SerializeField] int maxHitboxes = 10; 
+    [SerializeField] int maxHitboxes = 50; 
 
     [System.Serializable]
     class HitboxContainer {
@@ -73,6 +73,7 @@ public class HitboxesController : MonoBehaviour
         ResetHitboxPosition(hitboxC, angle, this.transform.position);
         hitboxC.hitbox.Attack(angle);         
     }
+    
 
     #region  hitbox_setup
     List<string> blacklist_tags_list = new List<string>();
