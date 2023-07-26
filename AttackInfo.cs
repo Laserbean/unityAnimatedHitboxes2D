@@ -14,6 +14,7 @@ public class AttackInfo2 {
     
     [Header ("Main Attack")] 
     public List<HitboxInfo> hitboxes; 
+    public float attackDelay; 
 
     [Header("Cooldown/reload")]
     public HitboxInfo after_hitbox; 

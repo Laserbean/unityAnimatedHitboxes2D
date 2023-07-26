@@ -12,7 +12,7 @@ public class HitboxesController : MonoBehaviour
     }
 
     [Min(1)]
-    [SerializeField] int maxHitboxes = 1; 
+    [SerializeField] int maxHitboxes = 10; 
 
     [System.Serializable]
     class HitboxContainer {
@@ -34,30 +34,24 @@ public class HitboxesController : MonoBehaviour
 
 
     }
-    GameObject hitbox_OB; 
-    Hitbox hitbox_s; 
+    // GameObject hitbox_OB; 
+    // Hitbox hitbox_s; 
 
     List<HitboxContainer> hitboxes = new List<HitboxContainer>(); 
 
 
-    private void Start() {
-        hitbox_OB = new GameObject("hitboxtest"); 
-        hitbox_OB.transform.SetParent(this.transform); 
-        hitbox_OB.transform.localPosition = Vector3.zero; 
-
-        hitbox_s = hitbox_OB.AddComponent<Hitbox>(); 
-        hitbox_s.awake(); 
-
-        hitbox_OB.transform.SetParent(this.transform); 
-    }
-
     [EasyButtons.Button]
     void testAttack() {
-        Attack(0); 
+        Attack(0, 0); 
     }
 
-    public void Attack(float angle) {
-        HitboxAttack(GetPooledHitboxC(), angle); 
+    public void Attack(float angle, float error = 0f) {
+        //FIXME
+
+        for (int i = 0; i < hitbox.bullets; i++) {
+            HitboxAttack(GetPooledHitboxC(), angle + RandomStatic.RandomGaussian(-error, +error));
+        }
+
     }
 
     HitboxContainer GetPooledHitboxC() {
@@ -88,17 +82,43 @@ public class HitboxesController : MonoBehaviour
     }
 
 
+    private HitboxContainer CreateHitbox() {
+        HitboxContainer hitboxreturn = new HitboxContainer(); 
+
+        if (hitbox_info.prefab == null) {
+            hitboxreturn.gameObject = new GameObject("hitboxtest"); 
+        } else {
+            hitboxreturn.gameObject = Instantiate(hitbox_info.prefab); 
+        }
+
+        if (hitboxreturn.gameObject.GetComponent<CustomTag>() == null) {
+            hitboxreturn.gameObject.AddComponent<CustomTag>(); 
+        }
+        hitboxreturn.gameObject.GetComponent<CustomTag>().AddTag(Constants.TAG_HITBOX);
+        hitboxreturn.gameObject.tag = Constants.TAG_HITBOX;
+        
+        hitboxreturn.gameObject.transform.SetParent(this.transform); 
+        hitboxreturn.gameObject.transform.localPosition = Vector3.zero; 
+        hitboxreturn.gameObject.transform.SetParent(this.transform); 
+
+        hitboxreturn.hitbox.awake(); 
+        return hitboxreturn; 
+    }
+
 
     HitboxContainer InstantiateHitbox() {
         if (hitboxes.Count >= maxHitboxes) {
-            Debug.LogError("Seriously Hitbox can't be created cause bigger than max".DebugColor(Color.red)); 
+            // Debug.LogError("Seriously Hitbox can't be created cause bigger than max".DebugColor(Color.red)); 
             return null; 
         }
         HitboxContainer hitboxc = new HitboxContainer(); 
-        hitboxc.gameObject = Instantiate(hitbox_OB, this.transform.position, Quaternion.identity);
+
+
+        hitboxc = CreateHitbox(); 
+
         hitboxc.gameObject.transform.SetParent(this.transform); 
 
-        hitboxc.hitbox.SetupHitbox(hitbox_info); 
+        hitboxc.hitbox.SetupHitbox(hitbox_info, this.transform); 
         hitboxc.hitbox.SetBlacklist(blacklist_tags_list); 
 
         hitboxes.Add(hitboxc);
@@ -117,6 +137,8 @@ public class HitboxesController : MonoBehaviour
         }
 
         ClearHitboxContainers(); 
+
+
         hitbox_info = hitboxinfo; 
     }
 

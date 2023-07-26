@@ -15,7 +15,7 @@ public class Hitbox : MonoBehaviour
 
     Rigidbody2D rgbd2d; 
 
-    // Transform parent; 
+    Transform parent; 
 
     HitboxInfo hitbox_info;
 
@@ -79,6 +79,10 @@ public class Hitbox : MonoBehaviour
         circleCollider2D.enabled = false; 
         polygonCollider2D.enabled = false; 
 
+        boxCollider2D.isTrigger = hitbox.rigidbodyInfo.isTrigger; 
+        circleCollider2D.isTrigger = hitbox.rigidbodyInfo.isTrigger; 
+        polygonCollider2D.isTrigger = hitbox.rigidbodyInfo.isTrigger; 
+
         switch(hitbox.shape) {
             
             case HitboxShape.Rectangle:
@@ -113,7 +117,7 @@ public class Hitbox : MonoBehaviour
         hitbox_info = _hitbox; 
 
         SetupCollider(hitbox_info); 
-        // // // // parent = _parent; 
+        parent = _parent; 
 
         // // // if (_hitbox.isBody) {
         // // //     this.gameObject.transform.parent = _parent; 
@@ -153,11 +157,17 @@ public class Hitbox : MonoBehaviour
 
     }
 
+    //NOTE this should only run if the hitbox is a projectile. 
     private void OnCollisionEnter2D(Collision2D other) {
         if (other.collider.isTrigger) return; 
 
         CustomTag ctag = other.gameObject.GetComponent<CustomTag>(); 
-        if (ctag == null) return;
+        if (ctag == null) {
+            turnOffCollider();
+            return;
+        }
+
+        if (ctag.HasTag(Constants.TAG_HITBOX)) return; 
 
         List<string> othertags = ctag.ContainedTags(blacklist_tags_list); 
 
@@ -173,6 +183,7 @@ public class Hitbox : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        if (other.isTrigger) return; 
         if (hitbox_info.rigidbodyInfo.canPassWalls) return; 
         if (!hitbox_info.rigidbodyInfo.isTrigger) return; 
         if (hitbox_info.move.sqrMagnitude == 0f) return; 
@@ -202,6 +213,8 @@ public class Hitbox : MonoBehaviour
         polygonCollider2D.enabled = false; 
 
         spriteRenderer.enabled = false; 
+
+        this.gameObject.SetActive(false); 
     }
 
 
@@ -238,16 +251,16 @@ public class Hitbox : MonoBehaviour
     }
 
     IEnumerator AttackCoroutine(float angle) {
+        resetCollider(); 
 
         yield return StartCoroutine(allAttack()); 
         
         
         this.gameObject.SetActive(false); 
-        // this.transform.parent = parent; 
 
         // this.transform.localPosition = Vector3.zero; 
-        resetCollider(); 
-        // if (parent == null) Destroy(this.gameObject); 
+        if (parent == null) Destroy(this.gameObject); 
+        this.transform.parent = parent; 
     }
 
     IEnumerator allAttack() {
@@ -262,14 +275,14 @@ public class Hitbox : MonoBehaviour
         for (int i = 0; i < hitbox_info.repeat + 1; i++) {
             // hasAttacked = false;
             if (num > 0) {
-                 yield return StartCoroutine(this.gameObject.DoAnimation(spriteRenderer, hitbox_info.sprites, hitbox_info.duration));
-            } else {
-                yield return new WaitForSeconds(hitbox_info.duration); 
-            }
-    
+                StartCoroutine(this.gameObject.DoAnimation(spriteRenderer, hitbox_info.sprites, hitbox_info.lifetime));
+            } 
+            yield return new WaitForSeconds(hitbox_info.duration);            
             if (hitbox_info.rigidbodyInfo.isTrigger) {
                 DoDamage(); 
             }
+            yield return new WaitForSeconds(Mathf.Max(0, hitbox_info.lifetime - hitbox_info.duration));            
+
         }
     }
 

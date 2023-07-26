@@ -16,6 +16,8 @@ public class HitboxInfo {
 
     [Header("Timing")]
     public float duration; 
+    public float lifetime; 
+    
     [Range(0, 10)]
     public int repeat; 
 
@@ -25,9 +27,14 @@ public class HitboxInfo {
 
     [Header("Animation")]
     public List<Sprite> sprites;
+    public GameObject prefab; 
+
 
     [Header("Damage")]
     public DamageInfo damageinfo; 
+
+    [Min(1)]
+    public int bullets = 1; 
 
 }
 

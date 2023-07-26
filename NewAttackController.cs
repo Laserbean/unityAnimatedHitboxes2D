@@ -16,10 +16,10 @@ public class NewAttackController : MonoBehaviour
     }
 
 
-    protected void Start() {
-        if (attackInfoObject == null) return; 
-        CreateHitboxes(); 
-    }
+    // protected void Start() {
+    //     if (attackInfoObject == null) return; 
+    //     CreateHitboxes(); 
+    // }
     [SerializeField] List<string> tag_blacklist = new List<string>(); 
 
     GameObject prepHGO; 
@@ -136,8 +136,10 @@ public class NewAttackController : MonoBehaviour
 
         
         foreach(var thing in attackHitboxesControllers) {
-            thing.Attack(angle); 
+            //FIXME
+            thing.Attack(angle, attackInfoObject.attack.max_angle_error); 
             yield return new WaitForSeconds(thing.hitbox.duration);
+            // yield return new WaitForSeconds(attackInfoObject.attack.attackDelay);
         }
 
         if (DisenableMovement != null) DisenableMovement(true);
