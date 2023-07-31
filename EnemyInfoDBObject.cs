@@ -5,8 +5,8 @@ using UnityEngine;
 
 namespace Laserbean.Hitbox2D
 {
-[CreateAssetMenu(fileName = "EnemyInfoDatabase",menuName = "Attack/EnemyInfoDatabase")]
-public class EnemyInfoDB : ScriptableObject
+[CreateAssetMenu(fileName = "EnemyInfoDatabase",menuName = "LB Hitbox2D/EnemyInfoDatabase")]
+public class EnemyInfoDBObject : ScriptableObject
 {
     public List<EnemyInfoObject> list; 
 

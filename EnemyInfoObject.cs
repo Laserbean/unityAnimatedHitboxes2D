@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Laserbean.Hitbox2D
 {
-[CreateAssetMenu(fileName = "EnemyInfo", menuName = "Attack/EnemyInfo")]
+[CreateAssetMenu(fileName = "EnemyInfo", menuName = "LB Hitbox2D/EnemyInfo")]
 public class EnemyInfoObject : ScriptableObject
 {
     public string Name; 
