@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+namespace Laserbean.Hitbox2D
 
-
+{
 [System.Serializable]
 public class AttackInfo2 {
     public bool isBody = false; 
@@ -75,4 +76,5 @@ public class AttackInfo {
             return main_hitbox.duration; 
         }
     }
+}
 }

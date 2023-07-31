@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-
+namespace Laserbean.Hitbox2D
+{
 [CreateAssetMenu(fileName = "EnemyInfoDatabase",menuName = "Attack/EnemyInfoDatabase")]
 public class EnemyInfoDB : ScriptableObject
 {
@@ -19,4 +20,4 @@ public class EnemyInfoDB : ScriptableObject
     }
 }
 
-
+}

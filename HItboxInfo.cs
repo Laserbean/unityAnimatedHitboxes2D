@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace Laserbean.Hitbox2D
+{
 [System.Serializable]
 public class HitboxInfo {
     [Header ("Shape")]
@@ -55,3 +57,4 @@ public enum HitboxShape {
     Sector
 }
 
+}

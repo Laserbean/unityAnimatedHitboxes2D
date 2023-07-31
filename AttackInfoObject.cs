@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
+namespace Laserbean.Hitbox2D
+{
 [CreateAssetMenu(fileName = "AttackInfo", menuName = "Attack/Attack Info")]
 public class AttackInfoObject : ScriptableObject
 {
@@ -24,5 +25,7 @@ public class AttackInfoObject : ScriptableObject
 
     public AttackInfo2 attack; 
 
+
+}
 
 }

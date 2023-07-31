@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace Laserbean.Hitbox2D
+{
 [System.Obsolete("Use NewAttackController")]
 public class AttackController : MonoBehaviour
 {
@@ -126,4 +128,5 @@ public class AttackController : MonoBehaviour
         canAttack = true; 
         yield break; 
     }
+}
 }

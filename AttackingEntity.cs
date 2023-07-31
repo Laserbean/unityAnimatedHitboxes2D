@@ -4,6 +4,8 @@ using UnityEngine;
 
 using Pathfinding; 
 
+using Laserbean.Hitbox2D; 
+
 // [System.Obsolete("Use the Attack controller directly maybe")]
 public abstract class AttackingEntity : MonoBehaviour
 {

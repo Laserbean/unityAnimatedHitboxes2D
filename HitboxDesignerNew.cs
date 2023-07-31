@@ -4,7 +4,8 @@ using UnityEngine;
 
 using UnityEditor;
 
-
+namespace Laserbean.Hitbox2D
+{
 public class HitboxDesignerNew : AttackingEntity
 {
 
@@ -25,7 +26,7 @@ public class HitboxDesignerNew : AttackingEntity
     
 
 }
-
+}
 // #if UNITY_EDITOR
 
 // [ExecuteInEditMode]

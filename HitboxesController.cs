@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+namespace Laserbean.Hitbox2D
+{
+    
 public class HitboxesController : MonoBehaviour
 {
     // [SerializeField]
@@ -182,6 +186,6 @@ public class HitboxesController : MonoBehaviour
     }
 
 
-
+}
 
 }

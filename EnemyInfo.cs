@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-
+namespace Laserbean.Hitbox2D
+{
 [System.Serializable]
 public class EnemyInfo {
     public string Name;
@@ -17,3 +18,4 @@ public class EnemyInfo {
 
 }
 
+}

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+namespace Laserbean.Hitbox2D
+{
 [System.Serializable]
 public class DamageInfo {
     [System.Serializable]
@@ -39,4 +41,5 @@ public class DamageInfo {
         // statusEffect = statusObject; //FIXME
     }
 
+}
 }

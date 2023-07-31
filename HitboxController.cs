@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace Laserbean.Hitbox2D
+{
 public class HitboxController : MonoBehaviour
 {
 
@@ -334,4 +336,5 @@ public class HitboxController : MonoBehaviour
         return hitboxobject;
     }
 
+}
 }
