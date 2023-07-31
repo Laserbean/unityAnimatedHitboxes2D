@@ -4,8 +4,8 @@ using UnityEngine;
 
 using Pathfinding; 
 
-using Laserbean.Hitbox2D; 
-
+namespace Laserbean.Hitbox2D
+{
 // [System.Obsolete("Use the Attack controller directly maybe")]
 public abstract class AttackingEntity : MonoBehaviour
 {
@@ -57,6 +57,7 @@ public abstract class AttackingEntity : MonoBehaviour
         attackController.startAttack(angle);
 
     }
-
+}
 
 }
+

@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using Laserbean.General;
 
 namespace Laserbean.Hitbox2D
 {
-    
+
 public class HitboxesController : MonoBehaviour
 {
     // [SerializeField]

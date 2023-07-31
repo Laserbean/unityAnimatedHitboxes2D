@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using Laserbean.General; 
+using Laserbean.Colliders; 
 namespace Laserbean.Hitbox2D
 {
 public class Hitbox : MonoBehaviour

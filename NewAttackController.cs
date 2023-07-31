@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+namespace Laserbean.Hitbox2D
+
+{
 public class NewAttackController : MonoBehaviour
 {
     [SerializeField] AttackInfoObject attackInfoObject;
@@ -150,4 +154,5 @@ public class NewAttackController : MonoBehaviour
         canAttack = true; 
         yield break; 
     }
+}
 }
