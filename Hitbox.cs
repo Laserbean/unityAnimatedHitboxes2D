@@ -15,7 +15,6 @@ public class Hitbox : MonoBehaviour
     [SerializeField] CircleCollider2D circleCollider2D;
     [SerializeField] PolygonCollider2D polygonCollider2D;
 
-    
 
     Rigidbody2D rgbd2d; 
 
@@ -81,8 +80,6 @@ public class Hitbox : MonoBehaviour
 
         this.gameObject.SetActive(false); 
 
-
-
     }
 
     void SetupCollider(HitboxInfo hitbox) {
@@ -143,6 +140,9 @@ public class Hitbox : MonoBehaviour
     }
 
 
+    public void SetKinematic(bool aa) {
+        rgbd2d.isKinematic = aa; 
+    }
 
 
     #region Collider_damage
@@ -177,6 +177,9 @@ public class Hitbox : MonoBehaviour
 
         CustomTag ctag = other.gameObject.GetComponent<CustomTag>(); 
         if (ctag == null) {
+            if (blacklist_tags_list.Contains(other.gameObject.tag)) return; 
+            other.gameObject.GetComponent<IDamageable>()?.Damage(hitbox_info.damageinfo.damage); 
+
             turnOffCollider();
             return;
         }
@@ -337,7 +340,9 @@ public class Hitbox : MonoBehaviour
         }
         
         Vector3 move = hitbox_info.move.Rotate(angle); 
-        rgbd2d.isKinematic = false;
+        // rgbd2d.isKinematic = false;
+
+        // if (!hitbox_info.isBody) 
         rgbd2d.AddForce(move, ForceMode2D.Impulse);
     }
 

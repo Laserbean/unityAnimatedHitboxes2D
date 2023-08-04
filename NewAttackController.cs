@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
+using Laserbean.General; 
 namespace Laserbean.Hitbox2D
 
 {
@@ -137,7 +137,7 @@ public class NewAttackController : MonoBehaviour
         // yield return prepHitboxesController.Attack(angle, curpos);
         //TODO maybe add the pos here
         prepHitboxesController.Attack(angle);
-        if (prepHitboxesController.hitbox.isBody && DoMovement != null) DoMovement(prepHitboxesController.hitbox.bodymove);
+        if (prepHitboxesController.hitbox.isBody && DoMovement != null) DoMovement(prepHitboxesController.hitbox.bodymove.Rotate(angle));
         yield return new WaitForSeconds(prepHitboxesController.hitbox.duration);
 
 
@@ -145,7 +145,7 @@ public class NewAttackController : MonoBehaviour
         foreach(var thing in attackHitboxesControllers) {
             //FIXME
             thing.Attack(angle, attackInfoObject.attack.max_angle_error); 
-            if (thing.hitbox.isBody && DoMovement != null) DoMovement(thing.hitbox.bodymove);
+            if (thing.hitbox.isBody && DoMovement != null) DoMovement(thing.hitbox.bodymove.Rotate(angle));
 
             yield return new WaitForSeconds(thing.hitbox.duration);
             // yield return new WaitForSeconds(attackInfoObject.attack.attackDelay);
@@ -153,7 +153,7 @@ public class NewAttackController : MonoBehaviour
 
         if (DisenableMovement != null) DisenableMovement(true);
         cooldownHitboxesController.Attack(angle); 
-        if (cooldownHitboxesController.hitbox.isBody && DoMovement != null) DoMovement(cooldownHitboxesController.hitbox.bodymove);
+        if (cooldownHitboxesController.hitbox.isBody && DoMovement != null) DoMovement(cooldownHitboxesController.hitbox.bodymove.Rotate(angle));
         yield return new WaitForSeconds(cooldownHitboxesController.hitbox.duration);
 
 

@@ -176,11 +176,16 @@ public class HitboxesController : MonoBehaviour
 
         angle = hitbox_info.zeroRotation ? 0 : angle; 
         if (hitbox_info.isBody) {
+            hitboxc.hitbox.SetKinematic(true);
+
+
             hitboxc.gameObject.transform.position = position + hitbox_info.local_position.ToVector3().Rotate(angle); 
 
             // this.gameObject.transform.localPosition = hitbox_info.local_position.ToVector3().Rotate(angle); 
             hitboxc.gameObject.transform.rotation = Quaternion.Euler(0,0,angle);
         } else {
+
+            hitboxc.hitbox.SetKinematic(false);
             hitboxc.gameObject.transform.position = position + hitbox_info.local_position.ToVector3().Rotate(angle); 
             hitboxc.gameObject.transform.rotation = Quaternion.Euler(0,0,angle); 
             hitboxc.gameObject.transform.SetParent(null); 
