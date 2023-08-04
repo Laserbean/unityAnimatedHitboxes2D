@@ -7,11 +7,11 @@ using Pathfinding;
 namespace Laserbean.Hitbox2D
 {
 // [System.Obsolete("Use the Attack controller directly maybe")]
-public abstract class AttackingEntity : MonoBehaviour
+public abstract class AttackingEntity : MonoBehaviour, IAttackingEntity
 {
     public AttackInfoObject attackInfoObject;
 
-    // public AttackInfo2 attackInfo; 
+    [SerializeField] List<string> BlackListTags = new List<string>(); 
 
     public abstract void DisenableMovement(bool canMove);
 
@@ -19,10 +19,21 @@ public abstract class AttackingEntity : MonoBehaviour
     public void AttackInfoUpdated() {
         UpdateHitboxes();
     }
+
+    List<AttackInfoObject> IAttackingEntity.GetAttackInfoObjects()
+    {
+        List<AttackInfoObject> list = new List<AttackInfoObject>(); 
+        list.Add(attackInfoObject); 
+        return list;
+    }
+
+    void IAttackingEntity.AttackInfoUpdated()
+    {
+        UpdateHitboxes();
+    }
     #endif
 
     NewAttackController attackController; 
-
 
     protected void UpdateHitboxes() {
         attackController.SetAttackInfo(attackInfoObject); 
@@ -32,6 +43,10 @@ public abstract class AttackingEntity : MonoBehaviour
         attackController = this.gameObject.AddComponent<NewAttackController>(); 
         attackController.DisenableMovement = DisenableMovement; 
         attackController.SetAttackInfo(attackInfoObject);
+
+        foreach(var tag in BlackListTags) {
+            attackController.AddBlacklist(tag); 
+        }
 
         // if (attackInfoObject == null) return; 
     }
@@ -44,7 +59,8 @@ public abstract class AttackingEntity : MonoBehaviour
 
 
     protected bool InRange(Vector3 enemyPos) {
-        return (enemyPos - this.transform.position).magnitude < attackInfoObject.attack.range.x; 
+        float distance = (enemyPos - this.transform.position).magnitude; 
+        return distance < attackInfoObject.attack.range.y && distance > attackInfoObject.attack.range.x; 
     }
 
 
@@ -57,7 +73,18 @@ public abstract class AttackingEntity : MonoBehaviour
         attackController.startAttack(angle);
 
     }
-}
+
 
 }
+
+public interface IAttackingEntity {
+    public List<AttackInfoObject> GetAttackInfoObjects(); 
+    public void AttackInfoUpdated();
+}
+
+
+
+}
+
+
 

@@ -25,6 +25,7 @@ public class HitboxInfo {
 
     [Header("Movement")]
     public Vector2 move; 
+    public Vector2 bodymove; 
     public bool isBody;
 
     [Header("Animation")]
@@ -36,6 +37,7 @@ public class HitboxInfo {
     public DamageInfo damageinfo; 
 
     [Min(1)]
+    [Range(1, 100)]
     public int bullets = 1; 
 
 }

@@ -157,11 +157,14 @@ public class Hitbox : MonoBehaviour
 
         foreach (Collider2D collider in colliders) {
             if (!collider.isTrigger) {
-                    CustomTag ctag = collider.gameObject.GetComponent<CustomTag>(); 
-                    if (ctag == null) continue;
-
+                CustomTag ctag = collider.gameObject.GetComponent<CustomTag>(); 
+                if (ctag != null) {
                     List<string> othertags = ctag.ContainedTags(blacklist_tags_list); 
                     if (othertags.Count > 0) { continue; }
+                }
+
+                if (blacklist_tags_list.Contains(collider.gameObject.tag)) continue; 
+
                 collider.gameObject.GetComponent<IDamageable>()?.Damage(hitbox_info.damageinfo.damage); 
             }
         }
@@ -279,13 +282,15 @@ public class Hitbox : MonoBehaviour
 
     public Coroutine Attack(float angle) {
         this.gameObject.SetActive(true); 
-        StartMoving(angle); 
 
         return StartCoroutine(AttackCoroutine(angle)); 
     }
 
     IEnumerator AttackCoroutine(float angle) {
         resetCollider(); 
+
+        StartMoving(angle); 
+
 
         yield return StartCoroutine(allAttack()); 
         
@@ -330,6 +335,7 @@ public class Hitbox : MonoBehaviour
         if (rgbd2d == null) {
             rgbd2d = this.GetComponent<Rigidbody2D>();
         }
+        
         Vector3 move = hitbox_info.move.Rotate(angle); 
         rgbd2d.isKinematic = false;
         rgbd2d.AddForce(move, ForceMode2D.Impulse);

@@ -183,7 +183,9 @@ public class HitboxesController : MonoBehaviour
         } else {
             hitboxc.gameObject.transform.position = position + hitbox_info.local_position.ToVector3().Rotate(angle); 
             hitboxc.gameObject.transform.rotation = Quaternion.Euler(0,0,angle); 
+            hitboxc.gameObject.transform.SetParent(null); 
         }
+
     }
 
 
