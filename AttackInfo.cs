@@ -8,7 +8,7 @@ namespace Laserbean.Hitbox2D
 {
 [System.Serializable]
 public class AttackInfo2 {
-    public bool isBody = false; 
+    public bool lock_movement_while_attack = false; 
 
     [Header ("Prep")] 
     public HitboxInfo prep_hitbox; 

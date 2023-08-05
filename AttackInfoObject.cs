@@ -18,7 +18,7 @@ public class AttackInfoObject : ScriptableObject
         //         component.AttackInfoUpdated();
         //     }
         // }
-        FindAndCallFunction<AttackingEntity>(); 
+        FindAndCallFunction<SingleAttackingEntity>(); 
         FindAndCallFunction<MultiAttackingEntity>(); 
 
 

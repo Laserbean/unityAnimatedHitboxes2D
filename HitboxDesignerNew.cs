@@ -4,29 +4,27 @@ using UnityEngine;
 
 using UnityEditor;
 
-namespace Laserbean.Hitbox2D
-{
-public class HitboxDesignerNew : AttackingEntity
-{
+// namespace Laserbean.Hitbox2D
+// {
+// public class HitboxDesignerNew : SingleAttackingEntity
+// {
 
-    public override void DisenableMovement(bool canMove){}
+//     [EasyButtons.Button]
+//     protected void OnReload() {
+//         UpdateHitboxes(); 
+//     }
 
-    [EasyButtons.Button]
-    protected void OnReload() {
-        UpdateHitboxes(); 
-    }
-
-    [SerializeField] float angle = 0f; 
-    [EasyButtons.Button]
-    void OnFire() {
-        startAttack(angle);
-    }
+//     [SerializeField] float angle = 0f; 
+//     [EasyButtons.Button]
+//     void OnFire() {
+//         StartAttack(angle);
+//     }
 
 
     
 
-}
-}
+// }
+// }
 // #if UNITY_EDITOR
 
 // [ExecuteInEditMode]

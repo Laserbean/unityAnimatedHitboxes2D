@@ -109,7 +109,7 @@ public class AttackController : MonoBehaviour
     IEnumerator Attackkk(float angle) {
         canAttack = false; 
 
-        if (attackInfoObject.attack.isBody) {
+        if (attackInfoObject.attack.lock_movement_while_attack) {
             if (DisenableMovement != null) DisenableMovement(false);
         }
 

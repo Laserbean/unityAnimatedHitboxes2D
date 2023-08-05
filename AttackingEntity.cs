@@ -6,82 +6,66 @@ using Pathfinding;
 
 namespace Laserbean.Hitbox2D
 {
-// [System.Obsolete("Use the Attack controller directly maybe")]
-public abstract class AttackingEntity : MonoBehaviour, IAttackingEntity
-{
-    public AttackInfoObject attackInfoObject;
 
-    [SerializeField] List<string> BlackListTags = new List<string>(); 
-
-    public abstract void DisenableMovement(bool canMove);
-
-    #if UNITY_EDITOR
-    public void AttackInfoUpdated() {
-        UpdateHitboxes();
-    }
-
-    List<AttackInfoObject> IAttackingEntity.GetAttackInfoObjects()
-    {
-        List<AttackInfoObject> list = new List<AttackInfoObject>(); 
-        list.Add(attackInfoObject); 
-        return list;
-    }
-
-    void IAttackingEntity.AttackInfoUpdated()
-    {
-        UpdateHitboxes();
-    }
-    #endif
-
-    NewAttackController attackController; 
-
-    protected void UpdateHitboxes() {
-        attackController.SetAttackInfo(attackInfoObject); 
-    }
-
-    protected void Start() {
-        attackController = this.gameObject.AddComponent<NewAttackController>(); 
-        attackController.DisenableMovement = DisenableMovement; 
-        attackController.SetAttackInfo(attackInfoObject);
-
-        foreach(var tag in BlackListTags) {
-            attackController.AddBlacklist(tag); 
-        }
-
-        // if (attackInfoObject == null) return; 
-    }
-
-
-
-    protected void AddBlacklist(string tagg) {
-        attackController.AddBlacklist(tagg); 
-    }
-
-
-    protected bool InRange(Vector3 enemyPos) {
-        float distance = (enemyPos - this.transform.position).magnitude; 
-        return distance < attackInfoObject.attack.range.y && distance > attackInfoObject.attack.range.x; 
-    }
-
-
-    bool canAttack = true; 
-
-    protected void startAttack(float angle) {
-        if(!GameManager.Instance.IsRunning) return; 
-        if (!attackController.canAttack) return; 
-
-        attackController.startAttack(angle);
-
-    }
-
-
-}
 
 public interface IAttackingEntity {
+
     public List<AttackInfoObject> GetAttackInfoObjects(); 
     public void AttackInfoUpdated();
+
+    void UpdateHitboxes();
+    void AddBlacklist(string tagg);
+    bool InRange(Vector3 enemyPos, int num = 0);
+    void StartAttack(float angle, int num = 0);
 }
 
+
+
+    [System.Serializable] 
+    public class AttackSet {
+
+        [HideInInspector]
+        public GameObject attackObject; 
+        public AttackInfoObject attackInfoObject; 
+
+        [HideInInspector]
+        public NewAttackController attackController; 
+
+
+        public void Initialize(int num, List<string> blacklisttag, NewAttackController.DisenableMovementDelegate disenablemovement, 
+        NewAttackController.MovementDelegate movement,
+        Transform parent) {
+            attackObject = new GameObject("attackobject" + num); 
+            attackObject.transform.SetParent(parent);
+            attackObject.transform.localPosition = Vector3.zero; 
+
+
+            attackController = attackObject.AddComponent<NewAttackController>(); 
+            attackController.DisenableMovement = disenablemovement; 
+            attackController.DoMovement = movement; 
+            attackController.SetAttackInfo(attackInfoObject);
+
+
+            foreach(var tag in blacklisttag) {
+                attackController.AddBlacklist(tag); 
+            }
+
+
+        }
+
+        public void UpdateSet() {
+            if (attackObject == null) return; 
+            if (attackController == null) attackController = attackObject.GetComponent<NewAttackController>(); 
+            attackController.UpdateHitboxes(); 
+        }
+
+        
+        public bool InRange(float distance) {
+            return distance < attackInfoObject.attack.range.y && distance > attackInfoObject.attack.range.x; 
+        }
+
+        
+    }
 
 
 }

@@ -11,7 +11,7 @@ public class NewAttackController : MonoBehaviour
     [SerializeField] AttackInfoObject attackInfoObject;
 
     public delegate void DisenableMovementDelegate(bool canMove);
-    public delegate void MovementDelegate(Vector2 move); 
+    public delegate void MovementDelegate(Vector3 move); 
 
     public DisenableMovementDelegate DisenableMovement;
     public MovementDelegate DoMovement; 
@@ -128,7 +128,7 @@ public class NewAttackController : MonoBehaviour
     IEnumerator Attackkk(float angle) {
         canAttack = false; 
 
-        if (attackInfoObject.attack.isBody) {
+        if (attackInfoObject.attack.lock_movement_while_attack) {
             if (DisenableMovement != null) DisenableMovement(false);
         }
 
