@@ -32,7 +32,8 @@ public interface IAttackingEntity {
         public NewAttackController attackController; 
 
 
-        public void Initialize(int num, List<string> blacklisttag, NewAttackController.DisenableMovementDelegate disenablemovement, 
+        public void Initialize(int num, List<string> blacklisttag, NewAttackController.DisenableBoolDelegate disenablemovement, 
+        NewAttackController.DisenableBoolDelegate disenablerotation, 
         NewAttackController.MovementDelegate movement,
         Transform parent) {
             attackObject = new GameObject("attackobject" + num); 
@@ -42,6 +43,8 @@ public interface IAttackingEntity {
 
             attackController = attackObject.AddComponent<NewAttackController>(); 
             attackController.DisenableMovement = disenablemovement; 
+            attackController.DisenableRotation = disenablerotation; 
+
             attackController.DoMovement = movement; 
             attackController.SetAttackInfo(attackInfoObject);
 

@@ -16,14 +16,20 @@ public class MultiAttackingEntity : MonoBehaviour, IAttackingEntity
     [SerializeField] List<string> BlackListTags = new List<string>(); 
 
     public void DisenableMovement(bool canMove) {
-        disenableEvent.Invoke(canMove); 
+        disenableMovementEvent.Invoke(canMove); 
     }
+
+    public void DisenableRotation(bool canMove) {
+        disenableRotationEvent.Invoke(canMove); 
+    }
+
 
     public void DoMovement(Vector3 move) {
         moveEvent.Invoke(move); 
     }
 
-    public MyBoolEvent disenableEvent; 
+    public MyBoolEvent disenableMovementEvent; 
+    public MyBoolEvent disenableRotationEvent; 
     public MyVector3Event moveEvent; 
 
     public void AttackInfoUpdated() {
@@ -40,7 +46,7 @@ public class MultiAttackingEntity : MonoBehaviour, IAttackingEntity
     void Awake() {
         int i = 0;
         foreach(var attackset in attackSets) {
-            attackset.Initialize(i, BlackListTags, DisenableMovement, DoMovement, this.transform);
+            attackset.Initialize(i, BlackListTags, DisenableMovement, DisenableRotation, DoMovement, this.transform);
         }
     }
 

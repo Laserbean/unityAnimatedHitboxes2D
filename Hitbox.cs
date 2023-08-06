@@ -324,7 +324,7 @@ public class Hitbox : MonoBehaviour
             if (hitbox_info.rigidbodyInfo.isTrigger) {
                 DoDamage(); 
             }
-            yield return new WaitForSeconds(Mathf.Max(0, hitbox_info.lifetime - hitbox_info.duration));            
+            yield return new WaitForSeconds(Mathf.Max(0, hitbox_info.lifetime));            
 
         }
     }

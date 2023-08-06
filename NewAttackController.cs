@@ -10,10 +10,12 @@ public class NewAttackController : MonoBehaviour
 {
     [SerializeField] AttackInfoObject attackInfoObject;
 
-    public delegate void DisenableMovementDelegate(bool canMove);
+    public delegate void DisenableBoolDelegate(bool canMove);
     public delegate void MovementDelegate(Vector3 move); 
 
-    public DisenableMovementDelegate DisenableMovement;
+    public DisenableBoolDelegate DisenableMovement;
+    public DisenableBoolDelegate DisenableRotation;
+
     public MovementDelegate DoMovement; 
 
     public void SetAttackInfo(AttackInfoObject attt) {
@@ -132,6 +134,10 @@ public class NewAttackController : MonoBehaviour
             if (DisenableMovement != null) DisenableMovement(false);
         }
 
+        if (attackInfoObject.attack.lock_rotation_while_attack) {
+            if (DisenableRotation != null) DisenableRotation(false);
+        }
+
         Vector3 curpos = this.transform.position; 
 
         // yield return prepHitboxesController.Attack(angle, curpos);
@@ -143,15 +149,16 @@ public class NewAttackController : MonoBehaviour
 
         
         foreach(var thing in attackHitboxesControllers) {
-            //FIXME
             thing.Attack(angle, attackInfoObject.attack.max_angle_error); 
             if (thing.hitbox.isBody && DoMovement != null) DoMovement(thing.hitbox.bodymove.Rotate(angle));
 
-            yield return new WaitForSeconds(thing.hitbox.duration);
+            yield return new WaitForSeconds(thing.hitbox.lifetime);
             // yield return new WaitForSeconds(attackInfoObject.attack.attackDelay);
         }
 
         if (DisenableMovement != null) DisenableMovement(true);
+        if (DisenableRotation != null) DisenableRotation(true);
+
         cooldownHitboxesController.Attack(angle); 
         if (cooldownHitboxesController.hitbox.isBody && DoMovement != null) DoMovement(cooldownHitboxesController.hitbox.bodymove.Rotate(angle));
         yield return new WaitForSeconds(cooldownHitboxesController.hitbox.duration);

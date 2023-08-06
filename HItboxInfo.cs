@@ -18,7 +18,11 @@ public class HitboxInfo {
 
     [Header("Timing")]
     public float duration; 
-    public float lifetime; 
+
+    public float lifetime {get => _after_duration + duration;}
+
+    [SerializeField] float _after_duration; 
+
     
     [Range(0, 10)]
     public int repeat; 
