@@ -31,6 +31,17 @@ public class MultiAttackingEntity : MonoBehaviour, IAttackingEntity
     public MyBoolEvent disenableMovementEvent; 
     public MyBoolEvent disenableRotationEvent; 
     public MyVector3Event moveEvent; 
+    
+    public class MyFishEvent : UnityEvent {}
+
+
+    public void SetWeapon(int num, AttackInfoObject attackinfoObject){
+        if (num >= attackSets.Count) {
+            throw new System.ArgumentOutOfRangeException(); 
+        }
+        attackSets[num].attackController.SetAttackInfo(attackinfoObject); 
+        attackSets[num].UpdateSet();
+    }
 
     public void AttackInfoUpdated() {
         UpdateHitboxes();

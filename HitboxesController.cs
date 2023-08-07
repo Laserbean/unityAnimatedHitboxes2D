@@ -51,7 +51,7 @@ public class HitboxesController : MonoBehaviour
     }
 
     public void Attack(float angle, float error = 0f) {
-        //FIXME
+        if (hitbox == null )    return; 
 
         for (int i = 0; i < hitbox.bullets; i++) {
             HitboxAttack(GetPooledHitboxC(), angle + RandomStatic.RandomGaussian(-error, +error));

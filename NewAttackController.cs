@@ -38,6 +38,8 @@ public class NewAttackController : MonoBehaviour
     HitboxesController cooldownHitboxesController;
 
     void CreateHitboxes() {
+        if (attackInfoObject == null) return; 
+
         prepHGO = new GameObject("prep_hitbox"); 
         prepHGO.transform.SetParent(this.transform); 
         prepHGO.transform.localPosition = Vector3.zero; 
@@ -55,6 +57,7 @@ public class NewAttackController : MonoBehaviour
 
             i+=1; 
             HitboxesController hitboxcont = go.AddComponent<HitboxesController>(); 
+
             hitboxcont.SetHitbox(hitbox); 
 
             attackHGOs.Add(go); 
@@ -88,7 +91,7 @@ public class NewAttackController : MonoBehaviour
     public void UpdateHitboxes() {
         DestroyHitboxes(); 
         CreateHitboxes(); 
-        UpdateBlacklist(); 
+        // UpdateBlacklist(); 
     }
 
     public void AddBlacklist(string tagg) {
@@ -123,6 +126,8 @@ public class NewAttackController : MonoBehaviour
     public void startAttack(float angle) {
         if(!GameManager.Instance.IsRunning) return; 
         if (!canAttack) return; 
+
+        if (attackInfoObject == null) return; 
 
         StartCoroutine(Attackkk(angle)); 
     }
