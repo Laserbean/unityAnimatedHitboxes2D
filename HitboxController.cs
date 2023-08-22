@@ -238,7 +238,7 @@ public class HitboxController : MonoBehaviour
 
                     List<string> othertags = ctag.ContainedTags(blacklist_tags_list); 
                     if (othertags.Count > 0) { continue; }
-                collider.gameObject.GetComponent<IDamageable>()?.Damage(hitbox_info.damageinfo.damage); 
+                collider.gameObject.GetComponent<IDamageable>()?.Damage(hitbox_info.damageinfo.damage_ammount); 
             }
         }
 
@@ -256,7 +256,7 @@ public class HitboxController : MonoBehaviour
                 return; 
             }
 
-            other.gameObject.GetComponent<IDamageable>()?.Damage(hitbox_info.damageinfo.damage); 
+            other.gameObject.GetComponent<IDamageable>()?.Damage(hitbox_info.damageinfo.damage_ammount); 
             turnOffCollider();
         }
     }

@@ -165,10 +165,27 @@ public class Hitbox : MonoBehaviour
 
                 if (blacklist_tags_list.Contains(collider.gameObject.tag)) continue; 
 
-                collider.gameObject.GetComponent<IDamageable>()?.Damage(hitbox_info.damageinfo.damage); 
+                // collider.gameObject.GetComponent<IDamageable>()?.Damage(hitbox_info.damageinfo.damage); 
+                DamageOther(collider.gameObject, hitbox_info.damageinfo);
             }
         }
 
+    }
+
+    void DamageOther(GameObject other, DamageInfo dmg) {
+        
+        Vector3 knockback = (other.transform.position - this.transform.position).normalized * dmg.knockback; 
+        Damage damagetodeal = dmg.damage; 
+        damagetodeal.knockback = knockback; 
+        other.GetComponent<IDamageable2>()?.Damage(damagetodeal); 
+
+        var idmginfo = other.GetComponent<IDamageInfoable>(); 
+        if (idmginfo != null) {
+            idmginfo.DamageInfoed(dmg); 
+            return; 
+        }
+
+        other.GetComponent<IDamageable>()?.Damage(dmg.damage_ammount); 
     }
 
     //NOTE this should only run if the hitbox is a projectile. 
@@ -178,7 +195,9 @@ public class Hitbox : MonoBehaviour
         CustomTag ctag = other.gameObject.GetComponent<CustomTag>(); 
         if (ctag == null) {
             if (blacklist_tags_list.Contains(other.gameObject.tag)) return; 
-            other.gameObject.GetComponent<IDamageable>()?.Damage(hitbox_info.damageinfo.damage); 
+            // other.gameObject.GetComponent<IDamageable>()?.Damage(hitbox_info.damageinfo.damage); 
+            DamageOther(other.gameObject, hitbox_info.damageinfo);
+
 
             turnOffCollider();
             return;
@@ -193,12 +212,14 @@ public class Hitbox : MonoBehaviour
             return; 
         }
 
-        other.gameObject.GetComponent<IDamageable>()?.Damage(hitbox_info.damageinfo.damage); 
+        // other.gameObject.GetComponent<IDamageable>()?.Damage(hitbox_info.damageinfo.damage); 
+        DamageOther(other.gameObject, hitbox_info.damageinfo);
+
         turnOffCollider();
         
     }
 
-    void OnTriggerEnter2D(Collider2D other)
+    void OnTriggerEnter2D(Collider2D other) //TODO Add a condition to check if damage should be done on trigger enter. 
     {
         if (other.isTrigger) return; 
         if (hitbox_info.rigidbodyInfo.canPassWalls) return; 

@@ -9,9 +9,15 @@ namespace Laserbean.Hitbox2D {
 
 public interface IDamageable2
 {
-    void Damage(DamageInfo damage);
+    void Damage(Damage damage);
 
 }
+
+public interface IDamageInfoable 
+{
+    public void DamageInfoed(DamageInfo damageInfo); 
+}
+
 
 
 }
