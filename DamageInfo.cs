@@ -30,20 +30,18 @@ public class DamageInfo {
 
     }
 
-    public DamageInfo(int dam, float knock, float stu, float crit, StatusEffectObject statusObject) {
-        critical = crit; 
+    // public DamageInfo(int dam, float knock, float stu, float crit, StatusEffectObject statusObject) {
+    //     critical = crit; 
 
-        damage_ammount = dam; 
-        knockback = knock;
-        stun = stu;
-        // statusEffect = statusObject; //FIXME
-    }
+    //     damage_ammount = dam; 
+    //     knockback = knock;
+    //     stun = stu;
+    //     // statusEffect = statusObject; //FIXME
+    // }
 
-    public Damage damage {
-        get {
-            int dmage = UnityEngine.Random.Range(0f, 1f) > critical ? damage_ammount * 2 : damage_ammount; 
-            return new Damage(dmage, Vector3.zero, stun); 
-        }
+    public Damage GetDamage(Vector2 normalized_direction) {
+        int dmage = UnityEngine.Random.Range(0f, 1f) > critical ? damage_ammount * 2 : damage_ammount; 
+        return new Damage(dmage, normalized_direction * knockback, stun); 
     }
 
 }

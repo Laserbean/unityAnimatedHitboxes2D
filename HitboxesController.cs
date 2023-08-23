@@ -12,7 +12,7 @@ public class HitboxesController : MonoBehaviour
     // [SerializeField]
     HitboxInfo hitbox_info; 
 
-    public HitboxInfo hitbox {
+    public HitboxInfo Hitbox {
         get {return hitbox_info;}
     }
 
@@ -51,9 +51,9 @@ public class HitboxesController : MonoBehaviour
     }
 
     public void Attack(float angle, float error = 0f) {
-        if (hitbox == null )    return; 
+        if (Hitbox == null )    return; 
 
-        for (int i = 0; i < hitbox.bullets; i++) {
+        for (int i = 0; i < Hitbox.bullets; i++) {
             HitboxAttack(GetPooledHitboxC(), angle + RandomStatic.RandomGaussian(-error, +error));
         }
 

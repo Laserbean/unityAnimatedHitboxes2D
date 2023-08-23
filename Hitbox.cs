@@ -173,10 +173,9 @@ public class Hitbox : MonoBehaviour
     }
 
     void DamageOther(GameObject other, DamageInfo dmg) {
-        
-        Vector3 knockback = (other.transform.position - this.transform.position).normalized * dmg.knockback; 
-        Damage damagetodeal = dmg.damage; 
-        damagetodeal.knockback = knockback; 
+        Vector3 knocback_dir = (other.transform.position - transform.position).normalized; 
+
+        Damage damagetodeal = dmg.GetDamage(knocback_dir); 
         other.GetComponent<IDamageable2>()?.Damage(damagetodeal); 
 
         var idmginfo = other.GetComponent<IDamageInfoable>(); 

@@ -68,8 +68,6 @@ public class MultiAttackingEntity : MonoBehaviour, IAttackingEntity
     }
 
 
-    bool canAttack = true; 
-
     public void StartAttack(float angle, int attacknum = 0) {
         if(!GameManager.Instance.IsRunning) return; 
 
@@ -82,7 +80,7 @@ public class MultiAttackingEntity : MonoBehaviour, IAttackingEntity
     }
 
     List<AttackInfoObject> IAttackingEntity.GetAttackInfoObjects() {
-        List<AttackInfoObject> list = new List<AttackInfoObject>();
+        List<AttackInfoObject> list = new ();
 
         foreach(var attackset in attackSets) {
             list.Add(attackset.attackInfoObject); 
