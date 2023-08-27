@@ -61,6 +61,11 @@ public class MultiAttackingEntity : MonoBehaviour, IAttackingEntity
         }
     }
 
+    public int GetRandomAttack()
+    {
+        return Random.Range(0, attackSets.Count); 
+    }
+
 
     public bool InRange(Vector3 enemyPos, int curattack = 0) {
         float distance = (enemyPos - this.transform.position).magnitude; 
@@ -76,7 +81,7 @@ public class MultiAttackingEntity : MonoBehaviour, IAttackingEntity
         AttackSet curset = attackSets[attacknum];
 
         if (!curset.attackController.canAttack) return; 
-        curset.attackController.startAttack(angle);
+        curset.attackController.StartAttack(angle);
     }
 
     List<AttackInfoObject> IAttackingEntity.GetAttackInfoObjects() {
@@ -96,7 +101,7 @@ public class MultiAttackingEntity : MonoBehaviour, IAttackingEntity
     }
 
 
-}
+    }
 
 }
 

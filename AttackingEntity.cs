@@ -17,6 +17,8 @@ public interface IAttackingEntity {
     void AddBlacklist(string tagg);
     bool InRange(Vector3 enemyPos, int num = 0);
     void StartAttack(float angle, int num = 0);
+
+    int GetRandomAttack(); 
 }
 
 

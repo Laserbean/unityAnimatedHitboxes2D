@@ -338,7 +338,7 @@ public class Hitbox : MonoBehaviour
         for (int i = 0; i < hitbox_info.repeat + 1; i++) {
             // hasAttacked = false;
             if (num > 0) {
-                StartCoroutine(this.gameObject.DoAnimation(spriteRenderer, hitbox_info.sprites, hitbox_info.lifetime));
+                StartCoroutine(spriteRenderer.DoAnimationTotalTime(hitbox_info.sprites, hitbox_info.lifetime));
             } 
             yield return new WaitForSeconds(hitbox_info.duration);            
             if (hitbox_info.rigidbodyInfo.isTrigger) {

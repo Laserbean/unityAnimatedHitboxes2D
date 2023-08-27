@@ -1,8 +1,15 @@
+#define USING_ANIMATOR
+
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 using Laserbean.General; 
+
+
+
+
 namespace Laserbean.Hitbox2D
 
 {
@@ -17,6 +24,21 @@ public class NewAttackController : MonoBehaviour
     public DisenableBoolDelegate DisenableRotation;
 
     public MovementDelegate DoMovement; 
+
+    #if USING_ANIMATOR
+    Animator animator; 
+
+    const string attackParam = "isAttacking"; 
+    bool hasParam = false; 
+    #endif
+
+    private void Awake() {
+        #if USING_ANIMATOR
+        animator = transform.parent.GetComponent<Animator>(); 
+        if (animator == null )return; 
+        hasParam = animator.ContainsParam(attackParam); 
+        #endif
+    }
 
     public void SetAttackInfo(AttackInfoObject attt) {
         attackInfoObject = attt; 
@@ -36,6 +58,8 @@ public class NewAttackController : MonoBehaviour
     List<HitboxesController> attackHitboxesControllers = new List<HitboxesController>();
     GameObject cooldownHGO;
     HitboxesController cooldownHitboxesController;
+
+
 
     void CreateHitboxes() {
         if (attackInfoObject == null) return; 
@@ -123,7 +147,7 @@ public class NewAttackController : MonoBehaviour
 
     public bool canAttack = true; 
 
-    public void startAttack(float angle) {
+    public void StartAttack(float angle) {
         if(!GameManager.Instance.IsRunning) return; 
         if (!canAttack) return; 
 
@@ -136,17 +160,19 @@ public class NewAttackController : MonoBehaviour
         canAttack = false; 
 
         if (attackInfoObject.attack.lock_movement_while_attack) {
-            if (DisenableMovement != null) DisenableMovement(false);
-        }
+                DisenableMovement?.Invoke(false);
+            }
 
         if (attackInfoObject.attack.lock_rotation_while_attack) {
-            if (DisenableRotation != null) DisenableRotation(false);
-        }
+                DisenableRotation?.Invoke(false);
+            }
 
         Vector3 curpos = this.transform.position; 
 
         // yield return prepHitboxesController.Attack(angle, curpos);
         //TODO maybe add the pos here
+
+        SetAttackAnimatorState(true); 
         prepHitboxesController.Attack(angle);
         if (prepHitboxesController.Hitbox.isBody && DoMovement != null) DoMovement(prepHitboxesController.Hitbox.bodymove.Rotate(angle));
         yield return new WaitForSeconds(prepHitboxesController.Hitbox.duration);
@@ -161,16 +187,26 @@ public class NewAttackController : MonoBehaviour
             // yield return new WaitForSeconds(attackInfoObject.attack.attackDelay);
         }
 
-        if (DisenableMovement != null) DisenableMovement(true);
-        if (DisenableRotation != null) DisenableRotation(true);
+        DisenableMovement?.Invoke(true);
+        DisenableRotation?.Invoke(true);
 
         cooldownHitboxesController.Attack(angle); 
+
+        SetAttackAnimatorState(false); 
+
         if (cooldownHitboxesController.Hitbox.isBody && DoMovement != null) DoMovement(cooldownHitboxesController.Hitbox.bodymove.Rotate(angle));
         yield return new WaitForSeconds(cooldownHitboxesController.Hitbox.duration);
 
 
         canAttack = true; 
         yield break; 
+    }
+
+    void SetAttackAnimatorState(bool param) {
+        #if USING_ANIMATOR
+        if (!hasParam) return; 
+        animator?.SetBool(attackParam, param);
+        #endif
     }
 }
 }
