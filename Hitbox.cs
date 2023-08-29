@@ -1,9 +1,16 @@
+#define USING_LASERBEAN_CHUNKS_2D
+
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 using Laserbean.General; 
 using Laserbean.Colliders; 
+
+    #if USING_LASERBEAN_CHUNKS_2D
+    using Laserbean.Chunks2d;
+    #endif
 namespace Laserbean.Hitbox2D
 {
 public class Hitbox : MonoBehaviour
@@ -153,7 +160,10 @@ public class Hitbox : MonoBehaviour
     }
 
     void DoDamageCollider(Collider2D triggerCollider) {
-        Collider2D[] colliders = Physics2D.OverlapBoxAll(triggerCollider.bounds.center, triggerCollider.bounds.size, 0f);
+        // Collider2D[] colliders = Physics2D.OverlapBoxAll(triggerCollider.bounds.center, triggerCollider.bounds.size, 0f);
+        List<Collider2D> colliders = new ();
+        ContactFilter2D filter = new ContactFilter2D().NoFilter();
+        Physics2D.OverlapCollider(triggerCollider, filter, colliders);
 
         foreach (Collider2D collider in colliders) {
             if (!collider.isTrigger) {
@@ -186,6 +196,13 @@ public class Hitbox : MonoBehaviour
 
         other.GetComponent<IDamageable>()?.Damage(dmg.damage_ammount); 
     }
+
+    #if USING_LASERBEAN_CHUNKS_2D
+    void DamageBlocks2d() {
+            //TODO Too much work for now and it isn't as important. 
+    }
+
+    #endif
 
     //NOTE this should only run if the hitbox is a projectile. 
     private void OnCollisionEnter2D(Collision2D other) {
