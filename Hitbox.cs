@@ -166,18 +166,18 @@ public class Hitbox : MonoBehaviour
         Physics2D.OverlapCollider(triggerCollider, filter, colliders);
 
         foreach (Collider2D collider in colliders) {
-            if (!collider.isTrigger) {
-                CustomTag ctag = collider.gameObject.GetComponent<CustomTag>(); 
-                if (ctag != null) {
-                    List<string> othertags = ctag.ContainedTags(blacklist_tags_list); 
-                    if (othertags.Count > 0) { continue; }
-                }
-
-                if (blacklist_tags_list.Contains(collider.gameObject.tag)) continue; 
-
-                // collider.gameObject.GetComponent<IDamageable>()?.Damage(hitbox_info.damageinfo.damage); 
-                DamageOther(collider.gameObject, hitbox_info.damageinfo);
+            if (collider.isTrigger) continue; //NOTE Not sure if i want t
+            CustomTag ctag = collider.gameObject.GetComponent<CustomTag>(); 
+            if (ctag != null) {
+                List<string> othertags = ctag.ContainedTags(blacklist_tags_list); 
+                if (othertags.Count > 0) { continue; }
             }
+
+            if (blacklist_tags_list.Contains(collider.gameObject.tag)) continue; 
+
+            // collider.gameObject.GetComponent<IDamageable>()?.Damage(hitbox_info.damageinfo.damage); 
+            DamageOther(collider.gameObject, hitbox_info.damageinfo);
+            
         }
 
     }
