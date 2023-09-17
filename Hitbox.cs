@@ -41,15 +41,26 @@ public class Hitbox : MonoBehaviour
 
     public bool canAttack = true; 
 
+    IDamageModify iDamageModify; 
+
     private void Start() {
         if (spriteRenderer == null) spriteRenderer = this.GetComponent<SpriteRenderer>(); 
         if (rgbd2d == null) rgbd2d = this.GetComponent<Rigidbody2D>(); 
 
     }
 
+    private void OnDisable() {
+        Debug.Log("DisableHitbox".DebugColor(Color.red)); 
+    }
 
 
-    public void awake() {
+
+    public void Initialize() {
+
+        iDamageModify = GetComponentInParent<IDamageModify>(); 
+        iDamageModify ??= transform.parent.GetComponentInParent<IDamageModify>();
+        iDamageModify ??= transform.parent.parent.GetComponentInParent<IDamageModify>();
+
         if (rgbd2d == null)
         rgbd2d = this.gameObject.AddComponent<Rigidbody2D>(); 
 
@@ -83,9 +94,9 @@ public class Hitbox : MonoBehaviour
         
         // this.gameObject.SetActive(false); 
 
-        turnOffCollider(); 
+        // turnOffCollider(); 
 
-        this.gameObject.SetActive(false); 
+        // this.gameObject.SetActive(false); 
 
     }
 
@@ -186,7 +197,17 @@ public class Hitbox : MonoBehaviour
         Vector3 knocback_dir = (other.transform.position - transform.position).normalized; 
 
         Damage damagetodeal = dmg.GetDamage(knocback_dir); 
+
+        iDamageModify?.ModifyDamage(ref damagetodeal); 
+
         other.GetComponent<IDamageable2>()?.Damage(damagetodeal); 
+
+        var statusaffectable =  other.GetComponent<IStatusAffect>();
+        if (statusaffectable != null) {
+            foreach(var statuseffectdur in dmg.allStatusEffects) {
+                statusaffectable.AddStatusEffect(statuseffectdur.statusEffect, statuseffectdur.duration);
+            }
+        }
 
         var idmginfo = other.GetComponent<IDamageInfoable>(); 
         if (idmginfo != null) {
@@ -195,6 +216,8 @@ public class Hitbox : MonoBehaviour
         }
 
         other.GetComponent<IDamageable>()?.Damage(dmg.damage_ammount); 
+
+
     }
 
     #if USING_LASERBEAN_CHUNKS_2D
@@ -360,7 +383,7 @@ public class Hitbox : MonoBehaviour
             yield return new WaitForSeconds(hitbox_info.duration);            
             if (hitbox_info.rigidbodyInfo.isTrigger) {
                 DoDamage(); 
-            }
+            } 
             yield return new WaitForSeconds(Mathf.Max(0, hitbox_info.lifetime));            
 
         }

@@ -55,7 +55,18 @@ public struct Damage {
         damage = dmm;
         knockback = knock; 
         stun = stn; 
+
+        damageType = DamageType.Nothing; 
     }
+
+    public DamageType damageType; 
+}
+
+public enum DamageType {
+    Nothing,
+    Melee,
+    Bullet,
+    Magic
 }
 
 

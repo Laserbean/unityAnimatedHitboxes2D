@@ -107,7 +107,7 @@ public class HitboxesController : MonoBehaviour
         hitboxreturn.gameObject.transform.localPosition = Vector3.zero; 
         hitboxreturn.gameObject.transform.SetParent(this.transform); 
 
-        hitboxreturn.hitbox.awake(); 
+        hitboxreturn.hitbox.Initialize(); 
         return hitboxreturn; 
     }
 

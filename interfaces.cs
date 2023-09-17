@@ -19,5 +19,10 @@ public interface IDamageInfoable
 }
 
 
+public interface IDamageModify 
+{
+    public void ModifyDamage(ref Damage damage); 
+}
+
 
 }
