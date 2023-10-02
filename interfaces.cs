@@ -24,5 +24,10 @@ public interface IDamageModify
     public void ModifyDamage(ref Damage damage); 
 }
 
+public interface IOnHit 
+{
+    public void OnHit(int num); 
+}
+
 
 }

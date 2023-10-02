@@ -42,6 +42,7 @@ public class Hitbox : MonoBehaviour
     public bool canAttack = true; 
 
     IDamageModify iDamageModify; 
+    IOnHit iOnHit; 
 
     private void Start() {
         if (spriteRenderer == null) spriteRenderer = this.GetComponent<SpriteRenderer>(); 
@@ -49,9 +50,9 @@ public class Hitbox : MonoBehaviour
 
     }
 
-    private void OnDisable() {
-        Debug.Log("DisableHitbox".DebugColor(Color.red)); 
-    }
+    // private void OnDisable() {
+    //     Debug.Log("DisableHitbox".DebugColor(Color.red)); 
+    // }
 
 
 
@@ -60,6 +61,10 @@ public class Hitbox : MonoBehaviour
         iDamageModify = GetComponentInParent<IDamageModify>(); 
         iDamageModify ??= transform.parent.GetComponentInParent<IDamageModify>();
         iDamageModify ??= transform.parent.parent.GetComponentInParent<IDamageModify>();
+
+        iOnHit = GetComponentInParent<IOnHit>(); 
+        iOnHit ??= transform.parent.GetComponentInParent<IOnHit>(); 
+        iOnHit ??= transform.parent.parent.GetComponentInParent<IOnHit>(); 
 
         if (rgbd2d == null)
         rgbd2d = this.gameObject.AddComponent<Rigidbody2D>(); 
@@ -176,6 +181,8 @@ public class Hitbox : MonoBehaviour
         ContactFilter2D filter = new ContactFilter2D().NoFilter();
         Physics2D.OverlapCollider(triggerCollider, filter, colliders);
 
+        int number_hit = 0; 
+
         foreach (Collider2D collider in colliders) {
             if (collider.isTrigger) continue; //NOTE Not sure if i want t
             CustomTag ctag = collider.gameObject.GetComponent<CustomTag>(); 
@@ -188,34 +195,36 @@ public class Hitbox : MonoBehaviour
 
             // collider.gameObject.GetComponent<IDamageable>()?.Damage(hitbox_info.damageinfo.damage); 
             DamageOther(collider.gameObject, hitbox_info.damageinfo);
-            
+            number_hit += 1; 
         }
+
+        iOnHit?.OnHit(number_hit); 
 
     }
 
-    void DamageOther(GameObject other, DamageInfo dmg) {
+    void DamageOther(GameObject other, DamageInfo dmginfo) {
         Vector3 knocback_dir = (other.transform.position - transform.position).normalized; 
 
-        Damage damagetodeal = dmg.GetDamage(knocback_dir); 
+        Damage damage_to_deal = dmginfo.GetDamage(knocback_dir); 
 
-        iDamageModify?.ModifyDamage(ref damagetodeal); 
+        iDamageModify?.ModifyDamage(ref damage_to_deal); 
 
-        other.GetComponent<IDamageable2>()?.Damage(damagetodeal); 
+        other.GetComponent<IDamageable2>()?.Damage(damage_to_deal); 
 
         var statusaffectable =  other.GetComponent<IStatusAffect>();
         if (statusaffectable != null) {
-            foreach(var statuseffectdur in dmg.allStatusEffects) {
+            foreach(var statuseffectdur in damage_to_deal.allStatusEffects) {
                 statusaffectable.AddStatusEffect(statuseffectdur.statusEffect, statuseffectdur.duration);
             }
         }
 
-        var idmginfo = other.GetComponent<IDamageInfoable>(); 
-        if (idmginfo != null) {
-            idmginfo.DamageInfoed(dmg); 
-            return; 
-        }
+        // // // var idmginfo = other.GetComponent<IDamageInfoable>(); 
+        // // // if (idmginfo != null) {
+        // // //     idmginfo.DamageInfoed(dmginfo); 
+        // // //     return; 
+        // // // }
 
-        other.GetComponent<IDamageable>()?.Damage(dmg.damage_ammount); 
+        other.GetComponent<IDamageable>()?.Damage(dmginfo.damage_ammount); 
 
 
     }

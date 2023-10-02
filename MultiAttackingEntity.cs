@@ -45,6 +45,9 @@ public class MultiAttackingEntity : MonoBehaviour, IAttackingEntity
         UpdateHitboxes();
     }
 
+    private void OnDisable() {
+        UpdateHitboxes();
+    }
 
     public void UpdateHitboxes() {
         foreach(var attackset in attackSets) {
