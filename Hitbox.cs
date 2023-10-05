@@ -8,9 +8,12 @@ using UnityEngine;
 using Laserbean.General; 
 using Laserbean.Colliders; 
 
-    #if USING_LASERBEAN_CHUNKS_2D
-    using Laserbean.Chunks2d;
-    #endif
+using System.Linq; 
+
+#if USING_LASERBEAN_CHUNKS_2D
+using Laserbean.Chunks2d;
+#endif
+
 namespace Laserbean.Hitbox2D
 {
 public class Hitbox : MonoBehaviour
@@ -183,6 +186,9 @@ public class Hitbox : MonoBehaviour
 
         int number_hit = 0; 
 
+#if USING_LASERBEAN_CHUNKS_2D
+        DamageBlocks2d(triggerCollider, hitbox_info.damageinfo );
+#endif
         foreach (Collider2D collider in colliders) {
             if (collider.isTrigger) continue; //NOTE Not sure if i want t
             CustomTag ctag = collider.gameObject.GetComponent<CustomTag>(); 
@@ -229,12 +235,41 @@ public class Hitbox : MonoBehaviour
 
     }
 
-    #if USING_LASERBEAN_CHUNKS_2D
-    void DamageBlocks2d() {
-            //TODO Too much work for now and it isn't as important. 
+#if USING_LASERBEAN_CHUNKS_2D
+    void DamageBlocks2d(Collider2D col, DamageInfo damageInfo) {
+        // List<Vector2Int> circlepos =  new(); 
+
+        var minbound = col.bounds.min.RoundToVector2Int(); 
+        var maxbound = col.bounds.max.RoundToVector2Int(); 
+
+        // circlepos.Clear(); 
+        for (int i = minbound.x - 1; i <= maxbound.x; i++) {
+            for (int j = minbound.y -1; j <= maxbound.y; j++) {
+
+                var all_cols = Physics2D.OverlapCircleAll(new Vector3(i + 0.5f, j + 0.5f), 0.5f);
+
+                if (all_cols.Contains(col))  {
+                    BlockInfo block =  WorldController.Instance.GetBlock(new Vector3Int(i, j), Matter.Solid); 
+
+                    if (block.IsEmpty) continue; 
+
+                    var hp = block.GetData("hp");
+                    hp -= damageInfo.damage_ammount;
+                    block.UpdateData("hp", hp); 
+                    
+                    if (hp <= 0) {
+                        WorldController.Instance.SetBlock(new Vector2Int(i, j),  new BlockInfo(){Matter = Matter.Solid}); 
+                    } else {
+                        WorldController.Instance.SetBlock(new Vector2Int(i, j),  block); 
+                    }
+                }
+            }
+        }
+
+        
     }
 
-    #endif
+#endif
 
     //NOTE this should only run if the hitbox is a projectile. 
     private void OnCollisionEnter2D(Collision2D other) {
