@@ -12,14 +12,14 @@ public class AttackInfo2 {
     public bool lock_rotation_while_attack = false; 
 
     [Header ("Prep")] 
-    public HitboxInfo prep_hitbox; 
+    public AttackHitboxInfo prep_hitbox; 
     
     [Header ("Main Attack")] 
-    public List<HitboxInfo> hitboxes; 
+    public List<AttackHitboxInfo> hitboxes; 
     public float attackDelay; 
 
     [Header("Cooldown/reload")]
-    public HitboxInfo after_hitbox; 
+    public AttackHitboxInfo after_hitbox; 
 
 
     [Header("Aim and range and other stuff")]
@@ -54,13 +54,13 @@ public class AttackInfo {
     public bool isBody = false; 
 
     [Header ("Prep")] 
-    public HitboxInfo prep_hitbox; 
+    public AttackHitboxInfo prep_hitbox; 
     
     [Header ("Main Attack")] 
-    public HitboxInfo main_hitbox; 
+    public AttackHitboxInfo main_hitbox; 
 
     [Header("Cooldown/reload")]
-    public HitboxInfo after_hitbox; 
+    public AttackHitboxInfo after_hitbox; 
 
 
     [Header("Aim and range and other stuff")]

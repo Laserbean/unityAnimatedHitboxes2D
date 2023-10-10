@@ -18,7 +18,7 @@ using unityInventorySystem;
 
 namespace Laserbean.Hitbox2D
 {
-public class Hitbox : MonoBehaviour
+public class HitboxControllerOld : MonoBehaviour
 {
 
     SpriteRenderer spriteRenderer; 
@@ -32,7 +32,7 @@ public class Hitbox : MonoBehaviour
 
     Transform parent; 
 
-    HitboxInfo hitbox_info;
+    AttackHitboxInfo hitbox_info;
 
     List<string> blacklist_tags_list = new List<string>();
 
@@ -80,7 +80,7 @@ public class Hitbox : MonoBehaviour
         
     }
 
-    void SetupCollider(HitboxInfo hitbox) {
+    void SetupCollider(AttackHitboxInfo hitbox) {
         boxCollider2D.enabled = false; 
         circleCollider2D.enabled = false; 
         polygonCollider2D.enabled = false; 
@@ -89,24 +89,26 @@ public class Hitbox : MonoBehaviour
         circleCollider2D.isTrigger = hitbox.rigidbodyInfo.isTrigger; 
         polygonCollider2D.isTrigger = hitbox.rigidbodyInfo.isTrigger; 
 
-        switch(hitbox.shape) {
+        var hitboxshape = hitbox.HitboxShapeInfo; 
+
+        switch(hitboxshape.shape) {
             
             case HitboxShape.Rectangle:
 
-                boxCollider2D.offset = hitbox.offset; 
-                boxCollider2D.size = hitbox.size; 
+                boxCollider2D.offset = hitboxshape.offset; 
+                boxCollider2D.size = hitboxshape.size; 
                 boxCollider2D.enabled = true; 
             break;
             case HitboxShape.Circle:
 
-                circleCollider2D.offset = hitbox.offset; 
-                circleCollider2D.radius = hitbox.size[0]; 
+                circleCollider2D.offset = hitboxshape.offset; 
+                circleCollider2D.radius = hitboxshape.size[0]; 
                 circleCollider2D.enabled = true; 
             break;
             case HitboxShape.Sector:
 
-                polygonCollider2D.GenerateSectorCollider(hitbox.size[1], 90f - hitbox.size[1]/2, hitbox.size[0], hitbox.size[0]/10, 4);
-                polygonCollider2D.offset = hitbox.offset; 
+                polygonCollider2D.GenerateSectorCollider(hitboxshape.size[1], 90f - hitboxshape.size[1]/2, hitboxshape.size[0], hitboxshape.size[0]/10, 4);
+                polygonCollider2D.offset = hitboxshape.offset; 
                 polygonCollider2D.enabled = true; 
             break;
             default:
@@ -115,7 +117,7 @@ public class Hitbox : MonoBehaviour
         }
     }
 
-    public void SetupHitbox(HitboxInfo _hitbox, Transform _parent = null) {
+    public void SetupHitbox(AttackHitboxInfo _hitbox, Transform _parent = null) {
 
         if (spriteRenderer == null) spriteRenderer = this.GetComponent<SpriteRenderer>(); 
         if (rgbd2d == null) rgbd2d = this.GetComponent<Rigidbody2D>(); 
@@ -245,7 +247,7 @@ public class Hitbox : MonoBehaviour
         if (other.isTrigger) return; 
         if (hitbox_info.rigidbodyInfo.canPassWalls) return; 
         if (!hitbox_info.rigidbodyInfo.isTrigger) return; 
-        if (hitbox_info.move.sqrMagnitude == 0f) return; 
+        if (hitbox_info.movementInfo.move.sqrMagnitude == 0f) return; 
 
 
         // CustomTag ctag = other.gameObject.GetComponent<CustomTag>(); 
@@ -305,7 +307,7 @@ public class Hitbox : MonoBehaviour
 
         spriteRenderer.enabled = true; 
 
-        switch(hitbox_info.shape) {
+        switch(hitbox_info.HitboxShapeInfo.shape) {
             case HitboxShape.Rectangle: 
                 boxCollider2D.enabled = true; 
             break;
@@ -381,7 +383,7 @@ public class Hitbox : MonoBehaviour
             rgbd2d = this.GetComponent<Rigidbody2D>();
         }
         
-        Vector3 move = hitbox_info.move.Rotate(angle); 
+        Vector3 move = hitbox_info.movementInfo.move.Rotate(angle); 
         // rgbd2d.isKinematic = false;
 
         // if (!hitbox_info.isBody) 

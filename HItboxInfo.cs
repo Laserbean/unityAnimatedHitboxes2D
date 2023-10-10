@@ -5,15 +5,11 @@ using UnityEngine;
 namespace Laserbean.Hitbox2D
 {
 [System.Serializable]
-public class HitboxInfo {
+public class AttackHitboxInfo {
     [Header ("Shape")]
-    public Vector2 size; 
-    public Vector2 offset; 
-    public Vector2 local_position; 
-    public HitboxShape shape; 
 
+    public HitboxShapeData HitboxShapeInfo; 
     public RigidbodyInfo rigidbodyInfo; 
-
     public bool zeroRotation = false; 
 
     [Header("Timing")]
@@ -28,14 +24,12 @@ public class HitboxInfo {
     public int repeat; 
 
     [Header("Movement")]
-    public Vector2 move; 
-    public Vector2 bodymove; 
-    public bool isBody;
+    public MovementInfo movementInfo; 
 
     [Header("Animation")]
     public List<Sprite> sprites;
-    public GameObject prefab; 
 
+    public GameObject prefab; 
 
     [Header("Damage")]
     public DamageInfo damageinfo; 
@@ -48,6 +42,29 @@ public class HitboxInfo {
     public int bullets = 1; 
 
 }
+
+[System.Serializable]
+public struct HitboxShapeData {
+    public Vector2 size; 
+    public Vector2 offset; 
+    public Vector2 local_position; 
+    public HitboxShape shape; 
+
+}
+
+[System.Serializable]
+public struct MovementInfo {
+    public Vector2 move; 
+    public Vector2 bodymove; 
+    public bool isBody;
+
+}
+
+[System.Serializable]
+public class AnimationInfo {
+    public List<Sprite> sprites;
+}
+
 
 [System.Serializable]
 public class RigidbodyInfo {

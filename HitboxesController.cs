@@ -10,7 +10,7 @@ namespace Laserbean.Hitbox2D
 public class HitboxesController : MonoBehaviour
 {
 
-    public HitboxInfo HitboxInfo {
+    public AttackHitboxInfo HitboxInfo {
         get; private set; 
     }
 
@@ -21,15 +21,15 @@ public class HitboxesController : MonoBehaviour
     class HitboxContainer {
         public GameObject gameObject;
 
-        Hitbox _hitbox; 
+        HitboxControllerOld _hitbox; 
 
-        public Hitbox hitbox {
+        public HitboxControllerOld hitbox {
             get {
                 if (_hitbox == null) {
-                    _hitbox = gameObject.GetComponent<Hitbox>(); 
+                    _hitbox = gameObject.GetComponent<HitboxControllerOld>(); 
                 }
                 if (_hitbox == null) {
-                    _hitbox = gameObject.AddComponent<Hitbox>(); 
+                    _hitbox = gameObject.AddComponent<HitboxControllerOld>(); 
                 }
                 return _hitbox; 
             }
@@ -139,7 +139,7 @@ public class HitboxesController : MonoBehaviour
     // AttackInfoObject attack; 
 
 
-    public void SetHitbox(HitboxInfo hitboxinfo) {
+    public void SetHitbox(AttackHitboxInfo hitboxinfo) {
 
         if (hitboxinfo == null) {
             Debug.Log("Can't set null hitboxinfo".DebugColor("red")); 
@@ -179,18 +179,18 @@ public class HitboxesController : MonoBehaviour
     void ResetHitboxPosition(HitboxContainer hitboxc, float angle, Vector3 position) {
 
         angle = HitboxInfo.zeroRotation ? 0 : angle; 
-        if (HitboxInfo.isBody) {
+        if (HitboxInfo.movementInfo.isBody) {
             hitboxc.hitbox.SetKinematic(true);
 
 
-            hitboxc.gameObject.transform.position = position + HitboxInfo.local_position.ToVector3().Rotate(angle); 
+            hitboxc.gameObject.transform.position = position + HitboxInfo.HitboxShapeInfo.local_position.ToVector3().Rotate(angle); 
 
             // this.gameObject.transform.localPosition = Hitbox.local_position.ToVector3().Rotate(angle); 
             hitboxc.gameObject.transform.rotation = Quaternion.Euler(0,0,angle);
         } else {
 
             hitboxc.hitbox.SetKinematic(false);
-            hitboxc.gameObject.transform.position = position + HitboxInfo.local_position.ToVector3().Rotate(angle); 
+            hitboxc.gameObject.transform.position = position + HitboxInfo.HitboxShapeInfo.local_position.ToVector3().Rotate(angle); 
             hitboxc.gameObject.transform.rotation = Quaternion.Euler(0,0,angle); 
             hitboxc.gameObject.transform.SetParent(null); 
         }

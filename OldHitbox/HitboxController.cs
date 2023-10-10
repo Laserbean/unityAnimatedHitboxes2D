@@ -10,7 +10,7 @@ namespace Laserbean.Hitbox2D
 public class HitboxController : MonoBehaviour
 {
 
-    HitboxInfo hitbox_info; 
+    AttackHitboxInfo hitbox_info; 
     SpriteRenderer spriteRenderer; 
 
     Transform parent = null; 
@@ -31,42 +31,43 @@ public class HitboxController : MonoBehaviour
     }
 
 
-    public void SetupHitbox(HitboxInfo _hitbox, Transform _parent) {
+    public void SetupHitbox(AttackHitboxInfo _hitbox, Transform _parent) {
 
         hitbox_info = _hitbox; 
 
         SetupCollider(hitbox_info); 
         parent = _parent; 
 
-        if (_hitbox.isBody) {
+        if (_hitbox.movementInfo.isBody) {
             this.gameObject.transform.parent = _parent; 
-            this.gameObject.transform.position = _parent.position + _hitbox.offset.ToVector3().Rotate(_parent.rotation.eulerAngles.z); 
+            this.gameObject.transform.position = _parent.position + _hitbox.HitboxShapeInfo.offset.ToVector3().Rotate(_parent.rotation.eulerAngles.z); 
             this.gameObject.transform.localRotation =Quaternion.identity; 
         }
     }
 
-    void SetupCollider(HitboxInfo hitbox) {
+    void SetupCollider(AttackHitboxInfo hitbox) {
         boxCollider2D.enabled = false; 
         circleCollider2D.enabled = false; 
         polygonCollider2D.enabled = false; 
 
-        switch(hitbox.shape) {
+        var hitboxshape = hitbox.HitboxShapeInfo; 
+        switch(hitboxshape.shape) {
             case HitboxShape.Rectangle:
 
-                boxCollider2D.offset = hitbox.offset; 
-                boxCollider2D.size = hitbox.size; 
+                boxCollider2D.offset = hitboxshape.offset; 
+                boxCollider2D.size = hitboxshape.size; 
                 boxCollider2D.enabled = true; 
             break;
             case HitboxShape.Circle:
 
-                circleCollider2D.offset = hitbox.offset; 
-                circleCollider2D.radius = hitbox.size[0]; 
+                circleCollider2D.offset = hitboxshape.offset; 
+                circleCollider2D.radius = hitboxshape.size[0]; 
                 circleCollider2D.enabled = true; 
             break;
             case HitboxShape.Sector:
 
-                polygonCollider2D.GenerateSectorCollider(hitbox.size[1], 90f - hitbox.size[1]/2, hitbox.size[0], hitbox.size[0]/10, 4);
-                polygonCollider2D.offset = hitbox.offset; 
+                polygonCollider2D.GenerateSectorCollider(hitboxshape.size[1], 90f - hitboxshape.size[1]/2, hitboxshape.size[0], hitboxshape.size[0]/10, 4);
+                polygonCollider2D.offset = hitboxshape.offset; 
                 polygonCollider2D.enabled = true; 
             break;
             default:
@@ -109,7 +110,8 @@ public class HitboxController : MonoBehaviour
     void resetCollider() {
         spriteRenderer.enabled = true; 
 
-        switch(hitbox_info.shape) {
+        var hitboxshape = hitbox_info.HitboxShapeInfo; 
+        switch(hitboxshape.shape) {
             case HitboxShape.Rectangle: 
                 boxCollider2D.enabled = true; 
             break;
@@ -129,7 +131,7 @@ public class HitboxController : MonoBehaviour
     void SetPosition(float angle, Vector3 position) {
         this.transform.parent = null; 
 
-        this.gameObject.transform.position = position + hitbox_info.local_position.ToVector3().Rotate(angle); 
+        this.gameObject.transform.position = position + hitbox_info.HitboxShapeInfo.local_position.ToVector3().Rotate(angle); 
 
         angle = hitbox_info.zeroRotation ? 0 : angle; 
         this.transform.rotation = Quaternion.Euler(0,0,angle); 
@@ -139,14 +141,15 @@ public class HitboxController : MonoBehaviour
     
     void ResetPosition(float angle, Vector3 position) {
         angle = hitbox_info.zeroRotation ? 0 : angle; 
-        if (hitbox_info.isBody) {
-            this.gameObject.transform.position = position + hitbox_info.local_position.ToVector3().Rotate(angle); 
+
+        if (hitbox_info.movementInfo.isBody) {
+            this.gameObject.transform.position = position + hitbox_info.HitboxShapeInfo.local_position.ToVector3().Rotate(angle); 
             this.transform.parent = parent; 
             // this.gameObject.transform.localPosition = hitbox_info.local_position.ToVector3().Rotate(angle); 
             this.transform.rotation = Quaternion.Euler(0,0,angle);
         } else {
             this.transform.parent = null; 
-            this.gameObject.transform.position = position + hitbox_info.local_position.ToVector3().Rotate(angle); 
+            this.gameObject.transform.position = position + hitbox_info.HitboxShapeInfo.local_position.ToVector3().Rotate(angle); 
             this.transform.rotation = Quaternion.Euler(0,0,angle); 
         }
     }
@@ -154,13 +157,14 @@ public class HitboxController : MonoBehaviour
 
     void ResetPosition(float angle) {
         angle = hitbox_info.zeroRotation ? 0 : angle; 
-        if (hitbox_info.isBody) {
+
+        if (hitbox_info.movementInfo.isBody) {
             this.transform.parent = parent; 
-            this.gameObject.transform.localPosition = hitbox_info.local_position.ToVector3().Rotate(angle); 
+            this.gameObject.transform.localPosition = hitbox_info.HitboxShapeInfo.local_position.ToVector3().Rotate(angle); 
             this.transform.rotation = Quaternion.Euler(0,0,angle);
         } else {
             this.transform.parent = null; 
-            this.gameObject.transform.position =parent.transform.position + hitbox_info.local_position.ToVector3().Rotate(angle); 
+            this.gameObject.transform.position =parent.transform.position + hitbox_info.HitboxShapeInfo.local_position.ToVector3().Rotate(angle); 
             this.transform.rotation = Quaternion.Euler(0,0,angle); 
         }
     }
@@ -173,7 +177,7 @@ public class HitboxController : MonoBehaviour
         for (int i = 0; i < hitbox_info.repeat + 1; i++) {
             // hasAttacked = false;
             if (num > 0) {
-                 yield return StartCoroutine(DoAnimation(hitbox_info.sprites, hitbox_info.duration));
+                yield return StartCoroutine(DoAnimation(hitbox_info.sprites, hitbox_info.duration));
             } else {
                 yield return new WaitForSeconds(hitbox_info.duration); 
             }
@@ -197,8 +201,8 @@ public class HitboxController : MonoBehaviour
         if (rgbd2d == null) {
             rgbd2d = this.GetComponent<Rigidbody2D>();
         }
-        Vector3 move = hitbox_info.move.Rotate(angle); 
-        if (hitbox_info.isBody) {
+        Vector3 move = hitbox_info.movementInfo.move.Rotate(angle); 
+        if (hitbox_info.movementInfo.isBody) {
             rgbd2d.isKinematic = true;
 
             if(parent.GetComponent<Rigidbody2D>() != null)
@@ -265,7 +269,7 @@ public class HitboxController : MonoBehaviour
     {
         if (hitbox_info.rigidbodyInfo.canPassWalls) return; 
         if (!hitbox_info.rigidbodyInfo.isTrigger) return; 
-        if (hitbox_info.move.sqrMagnitude == 0f) return; 
+        if (hitbox_info.movementInfo.move.sqrMagnitude == 0f) return; 
 
 
         // CustomTag ctag = other.gameObject.GetComponent<CustomTag>(); 
@@ -302,7 +306,7 @@ public class HitboxController : MonoBehaviour
     }
 
 
-    public static GameObject CreateHitbox(Transform parenttrans, HitboxInfo hitbox, string nam = "hitbox") {
+    public static GameObject CreateHitbox(Transform parenttrans, AttackHitboxInfo hitbox, string nam = "hitbox") {
         GameObject hitboxobject = new GameObject(nam); 
 
         // hitboxobject.transform.SetParent(parenttrans); 

@@ -37,7 +37,7 @@ public class AttackController : MonoBehaviour
 
         attackHGOs.Clear(); 
         attackHitboxControllers.Clear(); 
-        foreach(HitboxInfo hitbox in attackInfoObject.attack.hitboxes) {
+        foreach(AttackHitboxInfo hitbox in attackInfoObject.attack.hitboxes) {
             GameObject go = HitboxController.CreateHitbox(this.transform, hitbox, "mainattack");
             HitboxController hitboxcont = go.GetComponent<HitboxController>(); 
             attackHGOs.Add(go); 

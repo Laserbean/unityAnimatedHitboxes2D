@@ -69,7 +69,7 @@ public class NewAttackController : MonoBehaviour
         attackHGOs.Clear(); 
         attackHitboxesControllers.Clear(); 
         int i = 0; 
-        foreach(HitboxInfo hitbox in attackInfoObject.attack.hitboxes) {
+        foreach(AttackHitboxInfo hitbox in attackInfoObject.attack.hitboxes) {
             var go = CreateHitboxGameobject("main_hitbox " + i++);   
             HitboxesController hitboxcont = null; 
             SetupHitboxController(ref go, ref hitboxcont, hitbox);
@@ -92,7 +92,7 @@ public class NewAttackController : MonoBehaviour
         return prepHGO; 
     }
 
-    void SetupHitboxController(ref GameObject cur_gameobject, ref HitboxesController hitboxesController, HitboxInfo hitboxinfo) {
+    void SetupHitboxController(ref GameObject cur_gameobject, ref HitboxesController hitboxesController, AttackHitboxInfo hitboxinfo) {
         hitboxesController = cur_gameobject.AddComponent<HitboxesController>(); 
         hitboxesController.SetHitbox(hitboxinfo); 
     }
@@ -171,14 +171,14 @@ public class NewAttackController : MonoBehaviour
 
         SetAttackAnimatorState(true); 
         prepHitboxesController.Attack(angle);
-        if (prepHitboxesController.HitboxInfo.isBody && DoMovement != null) DoMovement(prepHitboxesController.HitboxInfo.bodymove.Rotate(angle));
+        if (prepHitboxesController.HitboxInfo.movementInfo.isBody && DoMovement != null) DoMovement(prepHitboxesController.HitboxInfo.movementInfo.bodymove.Rotate(angle));
         yield return new WaitForSeconds(prepHitboxesController.HitboxInfo.duration);
 
 
         
         foreach(var thing in attackHitboxesControllers) {
             thing.Attack(angle, attackInfoObject.attack.max_angle_error); 
-            if (thing.HitboxInfo.isBody && DoMovement != null) DoMovement(thing.HitboxInfo.bodymove.Rotate(angle));
+            if (thing.HitboxInfo.movementInfo.isBody && DoMovement != null) DoMovement(thing.HitboxInfo.movementInfo.bodymove.Rotate(angle));
 
             yield return new WaitForSeconds(thing.HitboxInfo.lifetime);
             // yield return new WaitForSeconds(attackInfoObject.attack.attackDelay);
@@ -191,7 +191,7 @@ public class NewAttackController : MonoBehaviour
 
         SetAttackAnimatorState(false); 
 
-        if (cooldownHitboxesController.HitboxInfo.isBody && DoMovement != null) DoMovement(cooldownHitboxesController.HitboxInfo.bodymove.Rotate(angle));
+        if (cooldownHitboxesController.HitboxInfo.movementInfo.isBody && DoMovement != null) DoMovement(cooldownHitboxesController.HitboxInfo.movementInfo.bodymove.Rotate(angle));
         yield return new WaitForSeconds(cooldownHitboxesController.HitboxInfo.duration);
 
 
