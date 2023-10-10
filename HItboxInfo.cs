@@ -40,6 +40,9 @@ public class HitboxInfo {
     [Header("Damage")]
     public DamageInfo damageinfo; 
 
+    [Header("Stain/Splash")] 
+    public StainInfo stain_info; 
+
     [Min(1)]
     [Range(1, 100)]
     public int bullets = 1; 
@@ -62,5 +65,14 @@ public enum HitboxShape {
     Circle, 
     Sector
 }
+
+
+
+[System.Serializable] 
+public struct StainInfo {
+    public StainType stainType; 
+    public int value; 
+}
+
 
 }

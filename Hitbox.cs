@@ -14,6 +14,8 @@ using System.Linq;
 using Laserbean.Chunks2d;
 #endif
 
+using unityInventorySystem; 
+
 namespace Laserbean.Hitbox2D
 {
 public class Hitbox : MonoBehaviour
@@ -33,10 +35,7 @@ public class Hitbox : MonoBehaviour
     HitboxInfo hitbox_info;
 
     List<string> blacklist_tags_list = new List<string>();
-    // public void AddBlacklist(string tagg) {
-    //     if (blacklist_tags_list.Contains(tagg)) return; 
-    //     blacklist_tags_list.Add(tagg); 
-    // }
+
 
     public void SetBlacklist(List<string> list) {
         blacklist_tags_list = list; 
@@ -53,11 +52,6 @@ public class Hitbox : MonoBehaviour
 
     }
 
-    // private void OnDisable() {
-    //     Debug.Log("DisableHitbox".DebugColor(Color.red)); 
-    // }
-
-
 
     public void Initialize() {
 
@@ -69,43 +63,21 @@ public class Hitbox : MonoBehaviour
         iOnHit ??= transform.parent.GetComponentInParent<IOnHit>(); 
         iOnHit ??= transform.parent.parent.GetComponentInParent<IOnHit>(); 
 
-        if (rgbd2d == null)
-        rgbd2d = this.gameObject.AddComponent<Rigidbody2D>(); 
+        rgbd2d ??= this.gameObject.AddComponent<Rigidbody2D>(); 
 
-        if (spriteRenderer == null) {
-            spriteRenderer =  this.gameObject.AddComponent<SpriteRenderer>();
-            spriteRenderer.sortingLayerName = "Entities";
-        }
+        spriteRenderer  ??=  this.gameObject.AddComponent<SpriteRenderer>();
+        spriteRenderer.sortingLayerName = "Entities";
 
-        if (boxCollider2D == null) {
-            boxCollider2D = this.gameObject.AddComponent<BoxCollider2D>(); 
-            boxCollider2D.enabled = false;
-        }
+        boxCollider2D ??= this.gameObject.AddComponent<BoxCollider2D>(); 
+        boxCollider2D.enabled = false;
 
 
-        if (circleCollider2D == null) {
-            circleCollider2D = this.gameObject.AddComponent<CircleCollider2D>(); 
-            circleCollider2D.enabled = false;
-        }
-
-        if (polygonCollider2D == null) {
-            polygonCollider2D = this.gameObject.AddComponent<PolygonCollider2D>(); 
-            polygonCollider2D.enabled = false;
-        }
-
-
-        // SetupHitbox(hitbox, parenttrans); 
-        // rgbd2d.gravityScale = hitbox.rigidbodyInfo.gravity_scale; 
-        // rgbd2d.mass = hitbox.rigidbodyInfo.mass; 
-        // rgbd2d.drag = hitbox.rigidbodyInfo.linear_drag; 
-        // rgbd2d.freezeRotation = hitbox.rigidbodyInfo.freeze_rotation; 
+        circleCollider2D ??= this.gameObject.AddComponent<CircleCollider2D>(); 
+        circleCollider2D.enabled = false;
+    
+        polygonCollider2D ??= this.gameObject.AddComponent<PolygonCollider2D>(); 
+        polygonCollider2D.enabled = false;
         
-        // this.gameObject.SetActive(false); 
-
-        // turnOffCollider(); 
-
-        // this.gameObject.SetActive(false); 
-
     }
 
     void SetupCollider(HitboxInfo hitbox) {
@@ -178,7 +150,7 @@ public class Hitbox : MonoBehaviour
         if(polygonCollider2D.enabled) DoDamageCollider(polygonCollider2D);
     }
 
-    void DoDamageCollider(Collider2D triggerCollider) {
+    void DoDamageCollider(Collider2D triggerCollider) {    
         // Collider2D[] colliders = Physics2D.OverlapBoxAll(triggerCollider.bounds.center, triggerCollider.bounds.size, 0f);
         List<Collider2D> colliders = new ();
         ContactFilter2D filter = new ContactFilter2D().NoFilter();
@@ -186,11 +158,9 @@ public class Hitbox : MonoBehaviour
 
         int number_hit = 0; 
 
-#if USING_LASERBEAN_CHUNKS_2D
-        DamageBlocks2d(triggerCollider, hitbox_info.damageinfo );
-#endif
         foreach (Collider2D collider in colliders) {
             if (collider.isTrigger) continue; //NOTE Not sure if i want t
+
             CustomTag ctag = collider.gameObject.GetComponent<CustomTag>(); 
             if (ctag != null) {
                 List<string> othertags = ctag.ContainedTags(blacklist_tags_list); 
@@ -198,13 +168,17 @@ public class Hitbox : MonoBehaviour
             }
 
             if (blacklist_tags_list.Contains(collider.gameObject.tag)) continue; 
-
-            // collider.gameObject.GetComponent<IDamageable>()?.Damage(hitbox_info.damageinfo.damage); 
             DamageOther(collider.gameObject, hitbox_info.damageinfo);
             number_hit += 1; 
         }
 
         iOnHit?.OnHit(number_hit); 
+
+#if USING_LASERBEAN_CHUNKS_2D
+        Damage damage_to_deal = hitbox_info.damageinfo.GetDamage(Vector2.one); 
+        iDamageModify?.ModifyDamage(ref damage_to_deal); 
+        EventManager.TriggerEvent(new OnHitboxAttack(triggerCollider, damage_to_deal));
+#endif
 
     }
 
@@ -234,42 +208,6 @@ public class Hitbox : MonoBehaviour
 
 
     }
-
-#if USING_LASERBEAN_CHUNKS_2D
-    void DamageBlocks2d(Collider2D col, DamageInfo damageInfo) {
-        // List<Vector2Int> circlepos =  new(); 
-
-        var minbound = col.bounds.min.RoundToVector2Int(); 
-        var maxbound = col.bounds.max.RoundToVector2Int(); 
-
-        // circlepos.Clear(); 
-        for (int i = minbound.x - 1; i <= maxbound.x; i++) {
-            for (int j = minbound.y -1; j <= maxbound.y; j++) {
-
-                var all_cols = Physics2D.OverlapCircleAll(new Vector3(i + 0.5f, j + 0.5f), 0.5f);
-
-                if (all_cols.Contains(col))  {
-                    BlockInfo block =  WorldController.Instance.GetBlock(new Vector3Int(i, j), Matter.Solid); 
-
-                    if (block.IsEmpty) continue; 
-
-                    var hp = block.GetData("hp");
-                    hp -= damageInfo.damage_ammount;
-                    block.UpdateData("hp", hp); 
-                    
-                    if (hp <= 0) {
-                        WorldController.Instance.SetBlock(new Vector2Int(i, j),  new BlockInfo(){Matter = Matter.Solid}); 
-                    } else {
-                        WorldController.Instance.SetBlock(new Vector2Int(i, j),  block); 
-                    }
-                }
-            }
-        }
-
-        
-    }
-
-#endif
 
     //NOTE this should only run if the hitbox is a projectile. 
     private void OnCollisionEnter2D(Collision2D other) {
@@ -460,5 +398,17 @@ public class Hitbox : MonoBehaviour
     }
 
 
-}}
+}
+
+public class OnHitboxAttack {
+    public Collider2D collider2D; 
+    public Damage damage;
+
+    public OnHitboxAttack(Collider2D _col2d, Damage _damageinfo) {
+        collider2D = _col2d; 
+        damage = _damageinfo; 
+    }
+}
+
+}
 

@@ -9,11 +9,9 @@ namespace Laserbean.Hitbox2D
 
 public class HitboxesController : MonoBehaviour
 {
-    // [SerializeField]
-    HitboxInfo hitbox_info; 
 
-    public HitboxInfo Hitbox {
-        get {return hitbox_info;}
+    public HitboxInfo HitboxInfo {
+        get; private set; 
     }
 
     [Min(1)]
@@ -39,8 +37,6 @@ public class HitboxesController : MonoBehaviour
 
 
     }
-    // GameObject hitbox_OB; 
-    // Hitbox hitbox_s; 
 
     List<HitboxContainer> hitboxes = new List<HitboxContainer>(); 
 
@@ -51,9 +47,9 @@ public class HitboxesController : MonoBehaviour
     }
 
     public void Attack(float angle, float error = 0f) {
-        if (Hitbox == null )    return; 
+        if (HitboxInfo == null )    return; 
 
-        for (int i = 0; i < Hitbox.bullets; i++) {
+        for (int i = 0; i < HitboxInfo.bullets; i++) {
             HitboxAttack(GetPooledHitboxC(), angle + RandomStatic.RandomGaussian(-error, +error));
         }
 
@@ -91,10 +87,10 @@ public class HitboxesController : MonoBehaviour
     private HitboxContainer CreateHitbox() {
         HitboxContainer hitboxreturn = new HitboxContainer(); 
 
-        if (hitbox_info.prefab == null) {
+        if (HitboxInfo.prefab == null) {
             hitboxreturn.gameObject = new GameObject("hitboxtest"); 
         } else {
-            hitboxreturn.gameObject = Instantiate(hitbox_info.prefab); 
+            hitboxreturn.gameObject = Instantiate(HitboxInfo.prefab); 
         }
 
         if (hitboxreturn.gameObject.GetComponent<CustomTag>() == null) {
@@ -108,6 +104,7 @@ public class HitboxesController : MonoBehaviour
         hitboxreturn.gameObject.transform.SetParent(this.transform); 
 
         hitboxreturn.hitbox.Initialize(); 
+
         return hitboxreturn; 
     }
 
@@ -122,9 +119,16 @@ public class HitboxesController : MonoBehaviour
 
         hitboxc = CreateHitbox(); 
 
+        if (HitboxInfo.stain_info.stainType != StainType.Nothing) {
+            var stainer =  hitboxc.gameObject.AddComponent<TriggerStainer>();
+
+            stainer.stainType = HitboxInfo.stain_info.stainType;
+            stainer.value = HitboxInfo.stain_info.value;
+        }
+
         hitboxc.gameObject.transform.SetParent(this.transform); 
 
-        hitboxc.hitbox.SetupHitbox(hitbox_info, this.transform); 
+        hitboxc.hitbox.SetupHitbox(HitboxInfo, this.transform); 
         hitboxc.hitbox.SetBlacklist(blacklist_tags_list); 
 
         hitboxes.Add(hitboxc);
@@ -145,18 +149,18 @@ public class HitboxesController : MonoBehaviour
         ClearHitboxContainers(); 
 
 
-        hitbox_info = hitboxinfo; 
+        HitboxInfo = hitboxinfo; 
     }
 
     // [EasyButtons.Button]
     // void updatehitbox() {
-    //     if (hitbox_info == null) {
+    //     if (Hitbox == null) {
     //         Debug.Log("HitboxInfo of hitboxes controller is null".DebugColor("blue")); 
     //         return; 
     //     }
     //     Debug.Log("HitboxInfo Setuped".DebugColor(Color.green)); 
 
-    //     // hitbox.SetupHitbox(hitbox_info); 
+    //     // hitbox.SetupHitbox(Hitbox); 
     //     ClearHitboxContainers(); 
     // }
     
@@ -174,19 +178,19 @@ public class HitboxesController : MonoBehaviour
 
     void ResetHitboxPosition(HitboxContainer hitboxc, float angle, Vector3 position) {
 
-        angle = hitbox_info.zeroRotation ? 0 : angle; 
-        if (hitbox_info.isBody) {
+        angle = HitboxInfo.zeroRotation ? 0 : angle; 
+        if (HitboxInfo.isBody) {
             hitboxc.hitbox.SetKinematic(true);
 
 
-            hitboxc.gameObject.transform.position = position + hitbox_info.local_position.ToVector3().Rotate(angle); 
+            hitboxc.gameObject.transform.position = position + HitboxInfo.local_position.ToVector3().Rotate(angle); 
 
-            // this.gameObject.transform.localPosition = hitbox_info.local_position.ToVector3().Rotate(angle); 
+            // this.gameObject.transform.localPosition = Hitbox.local_position.ToVector3().Rotate(angle); 
             hitboxc.gameObject.transform.rotation = Quaternion.Euler(0,0,angle);
         } else {
 
             hitboxc.hitbox.SetKinematic(false);
-            hitboxc.gameObject.transform.position = position + hitbox_info.local_position.ToVector3().Rotate(angle); 
+            hitboxc.gameObject.transform.position = position + HitboxInfo.local_position.ToVector3().Rotate(angle); 
             hitboxc.gameObject.transform.rotation = Quaternion.Euler(0,0,angle); 
             hitboxc.gameObject.transform.SetParent(null); 
         }

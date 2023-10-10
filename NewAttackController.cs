@@ -60,44 +60,41 @@ public class NewAttackController : MonoBehaviour
     HitboxesController cooldownHitboxesController;
 
 
-
     void CreateHitboxes() {
         if (attackInfoObject == null) return; 
 
-        prepHGO = new GameObject("prep_hitbox"); 
-        prepHGO.transform.SetParent(this.transform); 
-        prepHGO.transform.localPosition = Vector3.zero; 
-
-        prepHitboxesController = prepHGO.AddComponent<HitboxesController>(); 
-        prepHitboxesController.SetHitbox(attackInfoObject.attack.prep_hitbox); 
+        prepHGO = CreateHitboxGameobject("prep_hitbox");
+        SetupHitboxController(ref prepHGO, ref prepHitboxesController, attackInfoObject.attack.prep_hitbox);
 
         attackHGOs.Clear(); 
         attackHitboxesControllers.Clear(); 
         int i = 0; 
         foreach(HitboxInfo hitbox in attackInfoObject.attack.hitboxes) {
-            GameObject go = new GameObject("main_hitbox " + i); 
-            go.transform.SetParent(this.transform); 
-            go.transform.localPosition = Vector3.zero; 
-
-            i+=1; 
-            HitboxesController hitboxcont = go.AddComponent<HitboxesController>(); 
-
-            hitboxcont.SetHitbox(hitbox); 
+            var go = CreateHitboxGameobject("main_hitbox " + i++);   
+            HitboxesController hitboxcont = null; 
+            SetupHitboxController(ref go, ref hitboxcont, hitbox);
 
             attackHGOs.Add(go); 
             attackHitboxesControllers.Add(hitboxcont); 
         }
 
-        cooldownHGO = new GameObject("cooldown"); 
-        cooldownHGO.transform.SetParent(this.transform); 
-        cooldownHGO.transform.localPosition = Vector3.zero; 
-
-        cooldownHitboxesController = cooldownHGO.AddComponent<HitboxesController>(); 
-        cooldownHitboxesController.SetHitbox(attackInfoObject.attack.after_hitbox); 
+        cooldownHGO = CreateHitboxGameobject("cooldown"); 
+        SetupHitboxController(ref cooldownHGO, ref cooldownHitboxesController, attackInfoObject.attack.after_hitbox);
 
         canAttack = true;
-
         UpdateBlacklist();
+    }
+
+    GameObject CreateHitboxGameobject(string namme) {
+        prepHGO = new GameObject(namme); 
+        prepHGO.transform.SetParent(transform); 
+        prepHGO.transform.localPosition = Vector3.zero; 
+        return prepHGO; 
+    }
+
+    void SetupHitboxController(ref GameObject cur_gameobject, ref HitboxesController hitboxesController, HitboxInfo hitboxinfo) {
+        hitboxesController = cur_gameobject.AddComponent<HitboxesController>(); 
+        hitboxesController.SetHitbox(hitboxinfo); 
     }
 
     void DestroyHitboxes() {
@@ -174,16 +171,16 @@ public class NewAttackController : MonoBehaviour
 
         SetAttackAnimatorState(true); 
         prepHitboxesController.Attack(angle);
-        if (prepHitboxesController.Hitbox.isBody && DoMovement != null) DoMovement(prepHitboxesController.Hitbox.bodymove.Rotate(angle));
-        yield return new WaitForSeconds(prepHitboxesController.Hitbox.duration);
+        if (prepHitboxesController.HitboxInfo.isBody && DoMovement != null) DoMovement(prepHitboxesController.HitboxInfo.bodymove.Rotate(angle));
+        yield return new WaitForSeconds(prepHitboxesController.HitboxInfo.duration);
 
 
         
         foreach(var thing in attackHitboxesControllers) {
             thing.Attack(angle, attackInfoObject.attack.max_angle_error); 
-            if (thing.Hitbox.isBody && DoMovement != null) DoMovement(thing.Hitbox.bodymove.Rotate(angle));
+            if (thing.HitboxInfo.isBody && DoMovement != null) DoMovement(thing.HitboxInfo.bodymove.Rotate(angle));
 
-            yield return new WaitForSeconds(thing.Hitbox.lifetime);
+            yield return new WaitForSeconds(thing.HitboxInfo.lifetime);
             // yield return new WaitForSeconds(attackInfoObject.attack.attackDelay);
         }
 
@@ -194,8 +191,8 @@ public class NewAttackController : MonoBehaviour
 
         SetAttackAnimatorState(false); 
 
-        if (cooldownHitboxesController.Hitbox.isBody && DoMovement != null) DoMovement(cooldownHitboxesController.Hitbox.bodymove.Rotate(angle));
-        yield return new WaitForSeconds(cooldownHitboxesController.Hitbox.duration);
+        if (cooldownHitboxesController.HitboxInfo.isBody && DoMovement != null) DoMovement(cooldownHitboxesController.HitboxInfo.bodymove.Rotate(angle));
+        yield return new WaitForSeconds(cooldownHitboxesController.HitboxInfo.duration);
 
 
         canAttack = true; 

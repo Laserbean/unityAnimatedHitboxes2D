@@ -8,14 +8,15 @@ namespace Laserbean.Hitbox2D
 
 [System.Serializable]
 public class StatusEffectDuration {
-    public StatusEffectObject statusEffect; 
+    public StatusEffectTObject statusEffect; 
     public float duration;    
 
-    public StatusEffectDuration(StatusEffectObject statusobject, float dur) {
+    public StatusEffectDuration(StatusEffectTObject statusobject, float dur) {
         statusEffect = statusobject;
         duration = dur; 
     }       
 }
+
 
 [System.Serializable]
 public class DamageInfo {
@@ -38,7 +39,7 @@ public class DamageInfo {
 
     }
 
-    // public DamageInfo(int dam, float knock, float stu, float crit, StatusEffectObject statusObject) {
+    // public DamageInfo(int dam, float knock, float stu, float crit, StatusEffectTObject statusObject) {
     //     critical = crit; 
 
     //     damage_ammount = dam; 
@@ -117,10 +118,10 @@ public class DamageModifier
     StatusEffectDuration statusEffectDuration; 
 
 
-    public DamageModifier(float multiplier, DamageType damageType, StatusEffectObject statuseffectobject, float dur) {
+    public DamageModifier(float multiplier, DamageType damageType, StatusEffectTObject StatusEffectTObject, float dur) {
         damageMultiplier = multiplier; 
         newDamageType = damageType; 
-        statusEffectDuration = new(statuseffectobject, dur); 
+        statusEffectDuration = new(StatusEffectTObject, dur); 
     }
 
     public void ModifyDamage(ref Damage cur_damage)
