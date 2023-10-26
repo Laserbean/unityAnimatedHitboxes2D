@@ -16,7 +16,10 @@ using Laserbean.Chunks2d;
 
 using unityInventorySystem; 
 
-namespace Laserbean.Hitbox2D
+using Laserbean.Colliders.Hitbox2d;
+
+
+namespace Laserbean.AttackHitbox2D
 {
 public class HitboxControllerNew : MonoBehaviour
 {

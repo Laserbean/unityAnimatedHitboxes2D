@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Laserbean.Hitbox2D {
+namespace Laserbean.AttackHitbox2D {
 
 public interface IDamageable2
 {

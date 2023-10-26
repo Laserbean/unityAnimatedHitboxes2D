@@ -4,7 +4,7 @@ using UnityEngine;
 
 using Laserbean.General;
 
-namespace Laserbean.Hitbox2D
+namespace Laserbean.AttackHitbox2D
 {
 
 public class HitboxesController : MonoBehaviour

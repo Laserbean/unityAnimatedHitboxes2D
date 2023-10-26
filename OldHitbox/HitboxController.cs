@@ -5,7 +5,11 @@ using UnityEngine;
 using Laserbean.General;
 using Laserbean.Colliders;
 
-namespace Laserbean.Hitbox2D
+using Laserbean.General.OtherInterfaces;
+
+using Laserbean.Colliders.Hitbox2d;
+
+namespace Laserbean.AttackHitbox2D
 {
 public class HitboxController : MonoBehaviour
 {
@@ -242,7 +246,7 @@ public class HitboxController : MonoBehaviour
 
                     List<string> othertags = ctag.ContainedTags(blacklist_tags_list); 
                     if (othertags.Count > 0) { continue; }
-                collider.gameObject.GetComponent<IDamageable>()?.Damage(hitbox_info.damageinfo.damage_ammount); 
+                collider.gameObject.GetComponent<IDamageableInt>()?.Damage(hitbox_info.damageinfo.damage_ammount); 
             }
         }
 
@@ -260,7 +264,7 @@ public class HitboxController : MonoBehaviour
                 return; 
             }
 
-            other.gameObject.GetComponent<IDamageable>()?.Damage(hitbox_info.damageinfo.damage_ammount); 
+            other.gameObject.GetComponent<IDamageableInt>()?.Damage(hitbox_info.damageinfo.damage_ammount); 
             turnOffCollider();
         }
     }

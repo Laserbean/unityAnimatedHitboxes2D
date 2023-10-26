@@ -6,13 +6,18 @@ using System.Collections.Generic;
 using Laserbean.General;
 using Laserbean.Colliders; 
 
-using Laserbean.Hitbox2D;
 using UnityEngine;
 using unityInventorySystem;
 
 #if USING_LASERBEAN_CHUNKS_2D
 using Laserbean.Chunks2d;
 #endif
+
+using Laserbean.General.OtherInterfaces;
+
+using Laserbean.Colliders.Hitbox2d;
+
+namespace Laserbean.AttackHitbox2D{
 
 
 public class HitboxAttackComponent : MonoBehaviour
@@ -21,9 +26,7 @@ public class HitboxAttackComponent : MonoBehaviour
 
     Rigidbody2D rgbd2d; 
 
-    Transform parent; 
-
-    
+    Transform parent;   
 
     DamageInfo damageinfo; 
     RigidbodyInfo rgbdinfo; 
@@ -97,7 +100,7 @@ public class HitboxAttackComponent : MonoBehaviour
 #if USING_LASERBEAN_CHUNKS_2D
         Damage damage_to_deal = damageinfo.GetDamage(Vector2.one); 
         iDamageModify?.ModifyDamage(ref damage_to_deal); 
-        EventManager.TriggerEvent(new OnHitboxAttack(triggerCollider, damage_to_deal));
+        EventManager.TriggerEvent(new OnHitboxAttack(triggerCollider, damage_to_deal.damage));
 #endif
 
     }
@@ -116,7 +119,7 @@ public class HitboxAttackComponent : MonoBehaviour
             }
         }
 
-        other.GetComponent<IDamageable>()?.Damage(dmginfo.damage_ammount); 
+        other.GetComponent<IDamageableInt>()?.Damage(dmginfo.damage_ammount); 
 
 
     }
@@ -128,10 +131,7 @@ public class HitboxAttackComponent : MonoBehaviour
         CustomTag ctag = other.gameObject.GetComponent<CustomTag>(); 
         if (ctag == null) {
             if (blacklist_tags_list.Contains(other.gameObject.tag)) return; 
-            // other.gameObject.GetComponent<IDamageable>()?.Damage(damageinfo.damage); 
             DamageOther(other.gameObject, damageinfo);
-
-
             TurnOffCollider();
             return;
         }
@@ -169,14 +169,10 @@ public class HitboxAttackComponent : MonoBehaviour
 
     void TurnOffCollider() {
         hitboxControllerNew.DisableColliders(); 
-
         spriteRenderer.enabled = false; 
 
         TrailRenderer trailRenderer = gameObject.GetComponent<TrailRenderer>();
-        if (trailRenderer != null)
-        {
-            trailRenderer.enabled = false;
-        }
+        if (trailRenderer != null) { trailRenderer.enabled = false; }
 
         transform.parent = parent; 
         transform.localPosition = Vector3.zero; 
@@ -201,10 +197,8 @@ public class HitboxAttackComponent : MonoBehaviour
 
     #region attacking_stuff
 
-
     public Coroutine Attack(float angle) {
         gameObject.SetActive(true); 
-
         return StartCoroutine(AttackCoroutine(angle)); 
     }
 
@@ -255,5 +249,7 @@ public class HitboxAttackComponent : MonoBehaviour
         // if (!hitbox_info.isBody) 
         rgbd2d.AddForce(move, ForceMode2D.Impulse);
     }
+
+}
 
 }

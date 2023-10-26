@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Laserbean.General;
-using Laserbean.Hitbox2D;
+using Laserbean.AttackHitbox2D;
 using UnityEngine;
 using unityInventorySystem.Attribute;
 
@@ -9,7 +9,7 @@ public class DamageModifierComponent : MonoBehaviour, IDamageModify
 {
 
     [SerializeField]
-    List<DamageModifier> damageModifiers = new (); 
+    List<DamageModifier2> damageModifiers = new (); 
 
     void IDamageModify.ModifyDamage(ref Damage damage)
     {

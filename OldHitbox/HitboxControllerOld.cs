@@ -14,9 +14,16 @@ using System.Linq;
 using Laserbean.Chunks2d;
 #endif
 
-using unityInventorySystem; 
+using Laserbean.General.OtherInterfaces;
 
-namespace Laserbean.Hitbox2D
+
+using unityInventorySystem;
+using Unity.Mathematics;
+
+using Laserbean.Colliders.Hitbox2d;
+
+
+namespace Laserbean.AttackHitbox2D
 {
 public class HitboxControllerOld : MonoBehaviour
 {
@@ -179,7 +186,7 @@ public class HitboxControllerOld : MonoBehaviour
 #if USING_LASERBEAN_CHUNKS_2D
         Damage damage_to_deal = hitbox_info.damageinfo.GetDamage(Vector2.one); 
         iDamageModify?.ModifyDamage(ref damage_to_deal); 
-        EventManager.TriggerEvent(new OnHitboxAttack(triggerCollider, damage_to_deal));
+        EventManager.TriggerEvent(new OnHitboxAttack(triggerCollider, damage_to_deal.damage));
 #endif
 
     }
@@ -206,7 +213,7 @@ public class HitboxControllerOld : MonoBehaviour
         // // //     return; 
         // // // }
 
-        other.GetComponent<IDamageable>()?.Damage(dmginfo.damage_ammount); 
+        other.GetComponent<IDamageableInt>()?.Damage(dmginfo.damage_ammount); 
 
 
     }
@@ -404,9 +411,9 @@ public class HitboxControllerOld : MonoBehaviour
 
 public class OnHitboxAttack {
     public Collider2D collider2D; 
-    public Damage damage;
+    public int damage;
 
-    public OnHitboxAttack(Collider2D _col2d, Damage _damageinfo) {
+    public OnHitboxAttack(Collider2D _col2d, int _damageinfo) {
         collider2D = _col2d; 
         damage = _damageinfo; 
     }

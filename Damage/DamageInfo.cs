@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace Laserbean.Hitbox2D
+namespace Laserbean.AttackHitbox2D
 {
 
 [System.Serializable]
@@ -107,7 +107,7 @@ public enum DamageType {
 
 
 [System.Serializable]
-public class DamageModifier
+public class DamageModifier2
 {
     [SerializeField]
     float damageMultiplier;
@@ -118,7 +118,7 @@ public class DamageModifier
     StatusEffectDuration statusEffectDuration; 
 
 
-    public DamageModifier(float multiplier, DamageType damageType, StatusEffectTObject StatusEffectTObject, float dur) {
+    public DamageModifier2(float multiplier, DamageType damageType, StatusEffectTObject StatusEffectTObject, float dur) {
         damageMultiplier = multiplier; 
         newDamageType = damageType; 
         statusEffectDuration = new(StatusEffectTObject, dur); 

@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 
-namespace Laserbean.Hitbox2D
+namespace Laserbean.AttackHitbox2D
 {
 // [System.Obsolete("Use the Attack controller directly maybe")]
 public class MultiAttackingEntity : MonoBehaviour, IAttackingEntity

@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Laserbean.Hitbox2D
+using Laserbean.Colliders.Hitbox2d;
+
+namespace Laserbean.AttackHitbox2D
 {
 [System.Serializable]
 public class AttackHitboxInfo {
@@ -43,14 +45,6 @@ public class AttackHitboxInfo {
 
 }
 
-[System.Serializable]
-public struct HitboxShapeData {
-    public Vector2 size; 
-    public Vector2 offset; 
-    public Vector2 local_position; 
-    public HitboxShape shape; 
-
-}
 
 [System.Serializable]
 public struct MovementInfo {
@@ -58,29 +52,6 @@ public struct MovementInfo {
     public Vector2 bodymove; 
     public bool isBody;
 
-}
-
-[System.Serializable]
-public class AnimationInfo {
-    public List<Sprite> sprites;
-}
-
-
-[System.Serializable]
-public class RigidbodyInfo {
-    public bool isTrigger;
-    public bool canPassWalls; //danny phantom phantom phantom
-    public float mass; 
-    public float linear_drag; 
-    public float gravity_scale; 
-    public bool freeze_rotation;
-}
-
-public enum HitboxShape {
-    None,
-    Rectangle,
-    Circle, 
-    Sector
 }
 
 

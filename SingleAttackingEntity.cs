@@ -4,7 +4,7 @@ using UnityEngine;
 
 using Pathfinding; 
 
-namespace Laserbean.Hitbox2D
+namespace Laserbean.AttackHitbox2D
 {
     
 public class SingleAttackingEntity : MultiAttackingEntity

@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using Laserbean.General;
 using UnityEngine;
 
-namespace Laserbean.Hitbox2D {
+using Laserbean.Colliders.Hitbox2d;
+
+namespace Laserbean.AttackHitbox2D {
 
 public class HitboxManager : MonoBehaviour
-{
-
-    
+{    
     MiniObjectPooler hitboxpooler; 
 
     AttackHitboxInfo HitboxInfo;
 
+    [SerializeField]
     List<string> blacklist_tags_list = new List<string>();
     
     private void Start() {
@@ -56,11 +57,11 @@ public class HitboxManager : MonoBehaviour
         if (HitboxInfo == null )    return; 
 
         for (int i = 0; i < HitboxInfo.bullets; i++) {
-            HitboxAttack(GetHitbox(), angle + RandomStatic.RandomGaussian(-error, +error));
+            HitboxAttack(GetHitboxFromPooler(), angle + RandomStatic.RandomGaussian(-error, +error));
         }
     }
 
-    GameObject GetHitbox() {
+    GameObject GetHitboxFromPooler() {
         var go = hitboxpooler.GetPooledObject(); 
         var attackcomp = go.GetComponent<HitboxAttackComponent>(); 
         attackcomp.SetBlacklist(blacklist_tags_list);
