@@ -409,15 +409,6 @@ public class HitboxControllerOld : MonoBehaviour
 
 }
 
-public class OnHitboxAttack {
-    public Collider2D collider2D; 
-    public int damage;
-
-    public OnHitboxAttack(Collider2D _col2d, int _damageinfo) {
-        collider2D = _col2d; 
-        damage = _damageinfo; 
-    }
-}
 
 }
 
